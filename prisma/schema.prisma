@@ -1,0 +1,29 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model ChainToken {
+    id          Int      @id @default(autoincrement())
+    chainId     Int
+    address     String
+    totalBought String   @default("0") // Store as string to handle large numbers
+    trades      Trade[]
+    lastUpdated DateTime @default(now())
+    phase       Int      @default(0)
+
+    @@unique([chainId, address])
+}
+
+model Trade {
+    id           Int        @id @default(autoincrement())
+    chainToken   ChainToken @relation(fields: [chainTokenId], references: [id])
+    chainTokenId Int
+    user         String
+    amount       String // Store as string
+    createdAt    DateTime   @default(now())
+}
