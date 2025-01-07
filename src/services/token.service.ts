@@ -3,6 +3,12 @@ import { PrismaService } from './prisma.service';
 import { PHASES } from 'src/global.config';
 import { PhaseService } from './phase.service';
 
+interface PhaseConfig {
+    tokensForPhase: string;
+    priceInUsd: string;
+    totalTokensForSale: string;
+}
+
 @Injectable()
 export class TokenService {
     constructor(
@@ -65,43 +71,6 @@ export class TokenService {
         return chainToken;
     }
 
-    // async recordTradeAndUpdate(chainId: number, user: string, tradeAmount: string, newTotal: string) {
-    //     // First transaction: Update single chain data
-    //     const chainToken = await this.prisma.$transaction(async (tx) => {
-    //         const existingToken = await tx.chainToken.findFirst({ where: { chainId } });
-    //         if (!existingToken) throw new Error(`No token found for chain ${chainId}`);
-
-    //         const chainToken = await tx.chainToken.update({
-    //             where: { chainId_address: { chainId, address: existingToken.address } },
-    //             data: { totalBought: newTotal, lastUpdated: new Date() }
-    //         });
-
-    //         await tx.trade.create({
-    //             data: { chainTokenId: chainToken.id, user, amount: tradeAmount }
-    //         });
-
-    //         return chainToken;
-    //     });
-
-    //     // Second transaction: Handle phase update
-    //     const cumulativeTotal = await this.getCumulativeTotalBought();
-
-
-    //     const newPhase = this.calculatePhase(cumulativeTotal.toString());
-    //     console.log('cumulativeTotal', cumulativeTotal)
-    //     console.log('newPhase', newPhase)
-
-    //     if (newPhase > chainToken.phase) {
-    //         console.log('changing phase')
-    //         await this.handlePhaseTransition(newPhase, chainToken.address);
-    //         await this.prisma.chainToken.updateMany({
-    //             data: { phase: newPhase }
-    //         });
-    //     }
-
-    //     return chainToken;
-    // }
-
     async getCumulativeTotalBought(): Promise<bigint> {
         const chainTokens = await this.prisma.chainToken.findMany({
             select: { totalBought: true }
@@ -121,7 +90,7 @@ export class TokenService {
         return oldRecord?.phase || 1;
     }
 
-    private calculatePhase(totalBought: string): number {
+    public calculatePhase(totalBought: string): number {
         let phase = 1;
         const total = BigInt(totalBought);
 
@@ -132,9 +101,6 @@ export class TokenService {
             phase = Number(p);
         }
 
-        console.log('phase', phase)
-        console.log('PHASES[phase]', PHASES[phase])
-        console.log('totalBought', totalBought)
         return phase;
     }
 
@@ -142,8 +108,6 @@ export class TokenService {
         const phaseConfig = PHASES[phase];
 
         try {
-            console.log('handling phase transition')
-            console.log('phaseConfig', phaseConfig)
             await this.phaseService.setSaleParamsAllChains(
                 phaseConfig.priceInUsd,
                 phaseConfig.totalTokensForSale
@@ -151,6 +115,35 @@ export class TokenService {
         } catch (error) {
             console.error(`Failed to handle phase transition to phase ${phase}:`, error);
         }
+    }
+
+
+    async getAllChainsStatus(){
+        try {
+            // Get all chain tokens from database
+            const chainTokens = await this.prisma.chainToken.findMany({
+                select: {
+                    chainId: true,
+                    address: true,
+                    totalBought: true
+                }
+            });
+
+            return chainTokens;
+        } catch (error) {
+            console.error('Error getting chain status:', error);
+            throw error;
+        }
+    }
+
+    getPhaseConfig(phase: number): PhaseConfig {
+        // Get phase config or return first phase if not found
+        const phaseConfig = PHASES[phase];
+        if (!phaseConfig) {
+            console.warn(`Phase ${phase} config not found, using phase 1`);
+            return PHASES[1];
+        }
+        return phaseConfig;
     }
 
 }

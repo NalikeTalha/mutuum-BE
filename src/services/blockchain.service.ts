@@ -39,7 +39,7 @@ export class BlockchainService implements OnModuleInit {
         const contract = this.contracts.get(chainId);
         const totalSold = await contract.totalTokensSold();
         await this.tokenService.initializeChainToken(chainId, address, totalSold.toString());
-    }ƒ
+    }
 
     private setupEventListener(chainId: number, contract: ethers.Contract) {
         contract.on("BuyToken", async (buyer, token, amountIn, amountOut) => {
@@ -51,5 +51,26 @@ export class BlockchainService implements OnModuleInit {
                 console.error(`Error processing event on chain ${chainId}:`, error);
             }
         });
+    }
+
+    async getTotalSold(chainId: number): Promise<string> {
+        try {
+            // Get the contract instance for this chain
+            const contract = this.contracts.get(chainId);
+            if (!contract) {
+                throw new Error(`No contract initialized for chain ${chainId}`);
+            }
+
+            // Call totalTokensSold function from the contract
+            const totalSold = await contract.totalTokensSold();
+
+            // Convert BigNumber to string to maintain precision
+            return totalSold.toString();
+
+        } catch (error) {
+            // Log the error but return "0" to prevent system failure
+            console.error(`Error fetching total sold for chain ${chainId}:`, error);
+            return "0";
+        }
     }
 }
