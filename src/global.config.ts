@@ -11,13 +11,19 @@ export const CHAIN_CONFIGS: ChainConfig[] = [
         //bsc testnet
         "chainId": 97,
         "rpcUrl": "https://bsc-testnet.infura.io/v3/5c56ff0214024df5b78ae32961014217",
-        "contractAddress": "0x38b20884a6B3039CA71bEfF62CA30494e369b58c"
+        "contractAddress": "0x2f38323d899751323C04145B05d5FefC513b1519"
     },
     {
         // eth sepolia
         "chainId": 11155111,
         "rpcUrl": "https://sepolia.infura.io/v3/5c56ff0214024df5b78ae32961014217",
-        "contractAddress": "0x9c3fc9e4A460171aD713d6Ff6156C853997EDa1c"
+        "contractAddress": "0xeEAB23d916dA13CcB30fDB494a85c12638CFbB9B"
+    },
+    {
+        // base sepolia
+        "chainId": 84532,
+        "rpcUrl": "https://base-sepolia-rpc.publicnode.com",
+        "contractAddress": "0x89de37f99a0ea5a6594eda4ee567d97e1b8111d9"
     }
 ]
 
@@ -29,18 +35,23 @@ export interface PhaseConfig {
 
 export const PHASES: Record<number, PhaseConfig> = {
     1: {
-        tokensForPhase: '120000000000000005462189',
+        tokensForPhase: '120000000000000000000000',
         priceInUsd: '1000000000000000',
-        totalTokensForSale: '31000000000000000000000000000'
+        totalTokensForSale: '1000000000000000000000000000'
     },
     2: {
-        tokensForPhase: '120000000000000005480000',
-        priceInUsd: '1000000000000001',
-        totalTokensForSale: '32000000000000000000000000001'
+        tokensForPhase: '240000000000000000000000',
+        priceInUsd: '2000000000000000',
+        totalTokensForSale: '2000000000000000000000000000'
     },
     3: {
-        tokensForPhase: '120000000000000005500000',
-        priceInUsd: '1000000000000002',
-        totalTokensForSale: '330000000000000000000000000002'
-    }
+        tokensForPhase: '360000000000000000000000',
+        priceInUsd: '3000000000000000',
+        totalTokensForSale: '3000000000000000000000000000'
+    },
+    4: {
+        tokensForPhase: '480000000000000000000000',
+        priceInUsd: '4000000000000000',
+        totalTokensForSale: '4000000000000000000000000000'
+    },
 };
