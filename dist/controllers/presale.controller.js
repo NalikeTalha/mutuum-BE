@@ -12,11 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PresaleController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const ethers_1 = require("ethers");
 const global_config_1 = require("../global.config");
+const phase_service_1 = require("../services/phase.service");
 const token_service_1 = require("../services/token.service");
 let PresaleController = class PresaleController {
-    constructor(tokenService) {
+    constructor(tokenService, phaseService) {
         this.tokenService = tokenService;
+        this.phaseService = phaseService;
     }
     async getPhases() {
         return {
@@ -36,6 +39,48 @@ let PresaleController = class PresaleController {
             totalTokensForSale: phaseConfig.totalTokensForSale
         };
     }
+    async getPresaleDetails() {
+        try {
+            const chains = await this.tokenService.getAllChainsStatus();
+            const totalBought = chains.reduce((sum, chain) => sum + BigInt(chain.totalBought), BigInt(0)).toString();
+            const currentPhase = this.tokenService.calculatePhase(totalBought);
+            const phaseConfig = this.tokenService.getPhaseConfig(currentPhase);
+            console.log('phaseConfig', phaseConfig);
+            let totalRaisedInUsd = 0;
+            for (let i = 1; i <= currentPhase; i++) {
+                const phaseDetails = this.tokenService.getPhaseConfig(i);
+                if (currentPhase == 1) {
+                    if (totalBought < phaseDetails.tokensForPhase) {
+                        totalRaisedInUsd = Number((0, ethers_1.formatEther)(totalBought)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
+                    }
+                    else {
+                        totalRaisedInUsd = Number((0, ethers_1.formatEther)(phaseConfig.totalTokensForSale)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
+                    }
+                }
+                else {
+                    if (totalBought < phaseDetails.tokensForPhase) {
+                        totalRaisedInUsd += Number((0, ethers_1.formatEther)(totalBought)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
+                    }
+                    else {
+                        totalRaisedInUsd += Number((0, ethers_1.formatEther)(phaseConfig.totalTokensForSale)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
+                    }
+                }
+            }
+            const totalHolders = await this.phaseService.getTotalBuyersAllChains();
+            return {
+                totalBought: (0, ethers_1.formatEther)(totalBought),
+                currentPhase,
+                priceInUsd: (0, ethers_1.formatEther)(phaseConfig.priceInUsd),
+                tokenToNextPhase: (0, ethers_1.formatEther)(phaseConfig.tokensForPhase),
+                totalRaisedInUsd,
+                totalHolders
+            };
+        }
+        catch (err) {
+            console.log('err', err);
+            return err;
+        }
+    }
 };
 exports.PresaleController = PresaleController;
 __decorate([
@@ -50,9 +95,16 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PresaleController.prototype, "getPresaleStatus", null);
+__decorate([
+    (0, common_1.Get)('details'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PresaleController.prototype, "getPresaleDetails", null);
 exports.PresaleController = PresaleController = __decorate([
     (0, swagger_1.ApiTags)('presale'),
     (0, common_1.Controller)('presale'),
-    __metadata("design:paramtypes", [token_service_1.TokenService])
+    __metadata("design:paramtypes", [token_service_1.TokenService,
+        phase_service_1.PhaseService])
 ], PresaleController);
 //# sourceMappingURL=presale.controller.js.map

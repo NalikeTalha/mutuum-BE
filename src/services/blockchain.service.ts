@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ethers, JsonRpcProvider } from 'ethers';
 import { TokenService } from './token.service';
 import { CHAIN_CONFIGS } from 'src/global.config';
+import { abi as mutuumPresaleAbi } from 'src/abis/MutuumPresale.abi';
 
 @Injectable()
 export class BlockchainService implements OnModuleInit {
@@ -13,11 +14,7 @@ export class BlockchainService implements OnModuleInit {
     async onModuleInit() {
         const chains = CHAIN_CONFIGS;
 
-        const abi = [
-            "event BuyToken(address indexed buyer, address indexed token, uint256 amountIn, uint256 amountOut)",
-            "function totalTokensSold() view returns (uint256)",
-            "function setSaleParams(uint256 _priceInUSD, uint256 _totalTokensForSale) external"
-        ];
+        const abi = mutuumPresaleAbi
 
         const privateKey = process.env.PRIVATE_KEY;
         if (!privateKey) throw new Error('PRIVATE_KEY not set');
@@ -51,26 +48,5 @@ export class BlockchainService implements OnModuleInit {
                 console.error(`Error processing event on chain ${chainId}:`, error);
             }
         });
-    }
-
-    async getTotalSold(chainId: number): Promise<string> {
-        try {
-            // Get the contract instance for this chain
-            const contract = this.contracts.get(chainId);
-            if (!contract) {
-                throw new Error(`No contract initialized for chain ${chainId}`);
-            }
-
-            // Call totalTokensSold function from the contract
-            const totalSold = await contract.totalTokensSold();
-
-            // Convert BigNumber to string to maintain precision
-            return totalSold.toString();
-
-        } catch (error) {
-            // Log the error but return "0" to prevent system failure
-            console.error(`Error fetching total sold for chain ${chainId}:`, error);
-            return "0";
-        }
     }
 }

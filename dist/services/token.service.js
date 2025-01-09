@@ -47,13 +47,10 @@ let TokenService = class TokenService {
             await tx.trade.create({
                 data: { chainTokenId: chainToken.id, user, amount: tradeAmount }
             });
-            const allChainTokens = await tx.chainToken.findMany({
-                select: { totalBought: true, chainId: true }
-            });
-            const cumulativeTotal = allChainTokens.reduce((sum, token) => {
-                const amount = token.chainId === chainId ? newTotal : token.totalBought;
-                return sum + BigInt(amount);
-            }, BigInt(0));
+            const result = await tx.$queryRaw `SELECT SUM(CAST("totalBought" AS NUMERIC)) AS "sumTotalBought"
+                  FROM "ChainToken"`;
+            ;
+            const cumulativeTotal = result[0].sumTotalBought;
             const newPhase = this.calculatePhase(cumulativeTotal.toString());
             if (newPhase > chainToken.phase) {
                 await this.handlePhaseTransition(newPhase, chainToken.address);

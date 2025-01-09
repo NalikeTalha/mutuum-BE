@@ -8,5 +8,4 @@ export declare class BlockchainService implements OnModuleInit {
     onModuleInit(): Promise<void>;
     private initChainToken;
     private setupEventListener;
-    getTotalSold(chainId: number): Promise<string>;
 }

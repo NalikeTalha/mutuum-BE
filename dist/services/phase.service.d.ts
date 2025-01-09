@@ -4,4 +4,5 @@ export declare class PhaseService implements OnModuleInit {
     private wallets;
     onModuleInit(): Promise<void>;
     setSaleParamsAllChains(priceInUsd: string, totalTokensForSale: string): Promise<void>;
+    getTotalBuyersAllChains(): Promise<number>;
 }

@@ -32,6 +32,7 @@ export class TokenService {
             }
         });
     }
+    
     async recordTradeAndUpdate(chainId: number, user: string, tradeAmount: string, newTotal: string) {
         const chainToken = await this.prisma.$transaction(async (tx) => {
             const existingToken = await tx.chainToken.findFirst({ where: { chainId } });
@@ -46,15 +47,11 @@ export class TokenService {
                 data: { chainTokenId: chainToken.id, user, amount: tradeAmount }
             });
 
-            // Calculate cumulative including current update
-            const allChainTokens = await tx.chainToken.findMany({
-                select: { totalBought: true, chainId: true }
-            });
-
-            const cumulativeTotal = allChainTokens.reduce((sum, token) => {
-                const amount = token.chainId === chainId ? newTotal : token.totalBought;
-                return sum + BigInt(amount);
-            }, BigInt(0));
+            const result = await tx.$queryRaw
+                `SELECT SUM(CAST("totalBought" AS NUMERIC)) AS "sumTotalBought"
+                  FROM "ChainToken"`;
+            ;
+            const cumulativeTotal = result[0].sumTotalBought
 
             const newPhase = this.calculatePhase(cumulativeTotal.toString());
 
@@ -118,7 +115,7 @@ export class TokenService {
     }
 
 
-    async getAllChainsStatus(){
+    async getAllChainsStatus() {
         try {
             // Get all chain tokens from database
             const chainTokens = await this.prisma.chainToken.findMany({

@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PhaseService = void 0;
 const common_1 = require("@nestjs/common");
 const ethers_1 = require("ethers");
+const MutuumPresale_abi_1 = require("../abis/MutuumPresale.abi");
 const global_config_1 = require("../global.config");
 let PhaseService = class PhaseService {
     constructor() {
@@ -17,7 +18,7 @@ let PhaseService = class PhaseService {
     }
     async onModuleInit() {
         const chains = global_config_1.CHAIN_CONFIGS;
-        const abi = ["function setSaleParams(uint256 _priceInUSD, uint256 _totalTokensForSale) external"];
+        const abi = MutuumPresale_abi_1.abi;
         const privateKey = process.env.PRIVATE_KEY;
         if (!privateKey)
             throw new Error('PRIVATE_KEY not set');
@@ -36,7 +37,6 @@ let PhaseService = class PhaseService {
                 console.log(`setting following parameters to chainId: ${chainId}`);
                 console.log(`priceInUsd: ${priceInUsd} totalTokensForSale: ${chainId}`);
                 const tx = await contract.setSaleParams(priceInUsd, totalTokensForSale);
-                console.log('tx', tx);
                 console.log('tx.hash', tx.hash);
                 await tx.wait();
                 console.log(`Phase updated on chain ${chainId}: ${tx.hash}`);
@@ -46,6 +46,30 @@ let PhaseService = class PhaseService {
             }
         });
         await Promise.allSettled(setParamsPromises);
+    }
+    async getTotalBuyersAllChains() {
+        const totalBuyersPromises = Array.from(this.contracts.entries())
+            .map(async ([chainId, contract]) => {
+            try {
+                console.log(`Fetching totalBought from chainId: ${chainId}`);
+                const totalBought = await contract.totalBuyers();
+                console.log(`totalBought on chain ${chainId}:`, totalBought.toString());
+                return parseFloat(totalBought.toString());
+            }
+            catch (error) {
+                console.error(`Failed to fetch totalBought on chain ${chainId}:`, error);
+                return 0;
+            }
+        });
+        const results = await Promise.allSettled(totalBuyersPromises);
+        const totalBoughtSum = results.reduce((sum, result) => {
+            if (result.status === 'fulfilled') {
+                return sum + result.value;
+            }
+            return sum;
+        }, 0);
+        console.log(`Total sum of totalBought across all chains: ${totalBoughtSum}`);
+        return totalBoughtSum;
     }
 };
 exports.PhaseService = PhaseService;

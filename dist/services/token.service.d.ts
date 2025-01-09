@@ -10,18 +10,18 @@ export declare class TokenService {
     private phaseService;
     constructor(prisma: PrismaService, phaseService: PhaseService);
     initializeChainToken(chainId: number, address: string, totalBought: string): Promise<{
+        address: string;
         chainId: number;
         id: number;
-        address: string;
         totalBought: string;
         lastUpdated: Date;
         phase: number;
     }>;
     recordTradeAndUpdate(chainId: number, user: string, tradeAmount: string, newTotal: string): Promise<{
         chainToken: {
+            address: string;
             chainId: number;
             id: number;
-            address: string;
             totalBought: string;
             lastUpdated: Date;
             phase: number;
@@ -33,8 +33,8 @@ export declare class TokenService {
     calculatePhase(totalBought: string): number;
     private handlePhaseTransition;
     getAllChainsStatus(): Promise<{
-        chainId: number;
         address: string;
+        chainId: number;
         totalBought: string;
     }[]>;
     getPhaseConfig(phase: number): PhaseConfig;

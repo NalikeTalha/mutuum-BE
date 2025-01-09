@@ -1,15 +1,17 @@
 import { PhaseConfig } from "src/global.config";
+import { PhaseService } from "src/services/phase.service";
 import { TokenService } from "src/services/token.service";
 export declare class PresaleController {
     private readonly tokenService;
-    constructor(tokenService: TokenService);
+    private readonly phaseService;
+    constructor(tokenService: TokenService, phaseService: PhaseService);
     getPhases(): Promise<{
         phases: Record<number, PhaseConfig>;
     }>;
     getPresaleStatus(): Promise<{
         chains: {
-            chainId: number;
             address: string;
+            chainId: number;
             totalBought: string;
         }[];
         totalBought: string;
@@ -17,4 +19,5 @@ export declare class PresaleController {
         priceInUsd: string;
         totalTokensForSale: string;
     }>;
+    getPresaleDetails(): Promise<any>;
 }

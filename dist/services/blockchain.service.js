@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const ethers_1 = require("ethers");
 const token_service_1 = require("./token.service");
 const global_config_1 = require("../global.config");
+const MutuumPresale_abi_1 = require("../abis/MutuumPresale.abi");
 let BlockchainService = class BlockchainService {
     constructor(tokenService) {
         this.tokenService = tokenService;
@@ -22,11 +23,7 @@ let BlockchainService = class BlockchainService {
     }
     async onModuleInit() {
         const chains = global_config_1.CHAIN_CONFIGS;
-        const abi = [
-            "event BuyToken(address indexed buyer, address indexed token, uint256 amountIn, uint256 amountOut)",
-            "function totalTokensSold() view returns (uint256)",
-            "function setSaleParams(uint256 _priceInUSD, uint256 _totalTokensForSale) external"
-        ];
+        const abi = MutuumPresale_abi_1.abi;
         const privateKey = process.env.PRIVATE_KEY;
         if (!privateKey)
             throw new Error('PRIVATE_KEY not set');
@@ -56,20 +53,6 @@ let BlockchainService = class BlockchainService {
                 console.error(`Error processing event on chain ${chainId}:`, error);
             }
         });
-    }
-    async getTotalSold(chainId) {
-        try {
-            const contract = this.contracts.get(chainId);
-            if (!contract) {
-                throw new Error(`No contract initialized for chain ${chainId}`);
-            }
-            const totalSold = await contract.totalTokensSold();
-            return totalSold.toString();
-        }
-        catch (error) {
-            console.error(`Error fetching total sold for chain ${chainId}:`, error);
-            return "0";
-        }
     }
 };
 exports.BlockchainService = BlockchainService;
