@@ -6,7 +6,7 @@ export interface ChainConfig {
     contractAddress: string;
 }
 
-export const CHAIN_CONFIGS: ChainConfig[] = [
+export const CHAIN_CONFIGS_DEV: ChainConfig[] = [
     {
         //bsc testnet
         "chainId": 97,
@@ -26,6 +26,31 @@ export const CHAIN_CONFIGS: ChainConfig[] = [
         "contractAddress": "0x89de37f99a0ea5a6594eda4ee567d97e1b8111d9"
     }
 ]
+
+
+export const CHAIN_CONFIGS_PROD: ChainConfig[] = [
+    {
+        //bsc mainnet
+        "chainId": 56,
+        "rpcUrl": "https://binance.llamarpc.com",
+        "contractAddress": "0x2f38323d899751323C04145B05d5FefC513b1519"
+    },
+    {
+        // eth mainnet
+        "chainId": 1,
+        "rpcUrl": "https://eth.meowrpc.com",
+        "contractAddress": "0xeEAB23d916dA13CcB30fDB494a85c12638CFbB9B"
+    },
+    {
+        // polygon mainnet
+        "chainId": 137,
+        "rpcUrl": "https://polygon.llamarpc.com",
+        "contractAddress": "0x89de37f99a0ea5a6594eda4ee567d97e1b8111d9"
+    }
+]
+
+console.log('process.env.IS_LIVE',process.env.IS_LIVE);
+export const CHAIN_CONFIGS = process.env.IS_LIVE == 'true'  ? CHAIN_CONFIGS_PROD : CHAIN_CONFIGS_DEV;
 
 export interface PhaseConfig {
     tokensForPhase: string;     // Amount after which phase changes

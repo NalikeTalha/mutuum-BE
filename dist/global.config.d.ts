@@ -3,6 +3,8 @@ export interface ChainConfig {
     rpcUrl: string;
     contractAddress: string;
 }
+export declare const CHAIN_CONFIGS_DEV: ChainConfig[];
+export declare const CHAIN_CONFIGS_PROD: ChainConfig[];
 export declare const CHAIN_CONFIGS: ChainConfig[];
 export interface PhaseConfig {
     tokensForPhase: string;
