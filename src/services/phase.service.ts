@@ -71,4 +71,27 @@ export class PhaseService implements OnModuleInit {
         console.log(`Total sum of totalBought across all chains: ${totalBoughtSum}`);
         return totalBoughtSum;
     }
+
+    async getIsLiveAllChains(): Promise<boolean> {
+        const allIsLivePromises = Array.from(this.contracts.entries())
+            .map(async ([chainId, contract]) => {
+                try {
+                    console.log(`Fetching isLive from chainId: ${chainId}`);
+                    const isLive = await contract.isLive();
+                    console.log(`isLive on chain ${chainId}:`, isLive.toString());
+                    return isLive
+                } catch (error) {
+                    console.error(`Failed to fetch isLive on chain ${chainId}:`, error);
+                    return 0; // Return 0 if the call fails
+                }
+            });
+
+        const results = await Promise.all(allIsLivePromises);
+
+        // Check if every boolean in the array is true
+        const isAllLive = results.every(value => value == true);
+        console.log('isAllLive',isAllLive); 
+
+        return isAllLive;
+    }
 }

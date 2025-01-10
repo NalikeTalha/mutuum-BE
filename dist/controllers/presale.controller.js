@@ -67,13 +67,15 @@ let PresaleController = class PresaleController {
                 }
             }
             const totalHolders = await this.phaseService.getTotalBuyersAllChains();
+            const isLive = await this.phaseService.getIsLiveAllChains();
             return {
                 totalBought: (0, ethers_1.formatEther)(totalBought),
                 currentPhase,
                 priceInUsd: (0, ethers_1.formatEther)(phaseConfig.priceInUsd),
                 tokenToNextPhase: (0, ethers_1.formatEther)(phaseConfig.tokensForPhase),
                 totalRaisedInUsd,
-                totalHolders
+                totalHolders,
+                isLive
             };
         }
         catch (err) {

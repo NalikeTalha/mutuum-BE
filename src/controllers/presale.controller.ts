@@ -76,6 +76,7 @@ export class PresaleController {
             }
 
             const totalHolders = await this.phaseService.getTotalBuyersAllChains()
+            const isLive = await this.phaseService.getIsLiveAllChains()
 
             return {
                 totalBought: formatEther(totalBought),
@@ -83,7 +84,8 @@ export class PresaleController {
                 priceInUsd: formatEther(phaseConfig.priceInUsd),
                 tokenToNextPhase: formatEther(phaseConfig.tokensForPhase),
                 totalRaisedInUsd,
-                totalHolders
+                totalHolders,
+                isLive
             };
         } catch (err) {
             console.log('err', err)

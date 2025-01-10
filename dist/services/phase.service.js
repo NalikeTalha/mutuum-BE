@@ -71,6 +71,25 @@ let PhaseService = class PhaseService {
         console.log(`Total sum of totalBought across all chains: ${totalBoughtSum}`);
         return totalBoughtSum;
     }
+    async getIsLiveAllChains() {
+        const allIsLivePromises = Array.from(this.contracts.entries())
+            .map(async ([chainId, contract]) => {
+            try {
+                console.log(`Fetching isLive from chainId: ${chainId}`);
+                const isLive = await contract.isLive();
+                console.log(`isLive on chain ${chainId}:`, isLive.toString());
+                return isLive;
+            }
+            catch (error) {
+                console.error(`Failed to fetch isLive on chain ${chainId}:`, error);
+                return 0;
+            }
+        });
+        const results = await Promise.all(allIsLivePromises);
+        const isAllLive = results.every(value => value == true);
+        console.log('isAllLive', isAllLive);
+        return isAllLive;
+    }
 };
 exports.PhaseService = PhaseService;
 exports.PhaseService = PhaseService = __decorate([
