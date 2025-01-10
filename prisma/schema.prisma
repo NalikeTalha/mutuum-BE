@@ -27,3 +27,8 @@ model Trade {
     amount       String // Store as string
     createdAt    DateTime   @default(now())
 }
+
+model LaunchTime {
+    id           Int        @id @default(autoincrement())
+    time         DateTime
+}

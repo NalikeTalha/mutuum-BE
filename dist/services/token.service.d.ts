@@ -29,6 +29,11 @@ export declare class TokenService {
         phase: number;
     }>;
     getCumulativeTotalBought(): Promise<bigint>;
+    setLaunchTime(time: Date): Promise<{
+        id: number;
+        time: Date;
+    }>;
+    getLaunchTime(): Promise<Date>;
     private getOldPhase;
     calculatePhase(totalBought: string): number;
     private handlePhaseTransition;

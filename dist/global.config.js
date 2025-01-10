@@ -50,9 +50,9 @@ exports.PHASES = {
         totalTokensForSale: (0, ethers_1.parseEther)('11000').toString()
     },
     4: {
-        tokensForPhase: (0, ethers_1.parseEther)('100000').toString(),
+        tokensForPhase: (0, ethers_1.parseEther)('1000000').toString(),
         priceInUsd: (0, ethers_1.parseEther)('0.1').toString(),
-        totalTokensForSale: (0, ethers_1.parseEther)('88000').toString()
+        totalTokensForSale: (0, ethers_1.parseEther)('978000').toString()
     },
 };
 //# sourceMappingURL=global.config.js.map

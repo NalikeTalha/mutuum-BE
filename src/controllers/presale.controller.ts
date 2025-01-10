@@ -1,10 +1,23 @@
-import { Controller, Get } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Get, Post } from "@nestjs/common";
+import { ApiOperation, ApiProperty, ApiTags } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsString } from "class-validator";
 import { formatEther } from "ethers";
 import { PhaseConfig, PHASES } from "src/global.config";
 import { PhaseService } from "src/services/phase.service";
 import { TokenService } from "src/services/token.service";
 
+
+class SetLaunchTimeDto {
+    @ApiProperty({
+        description: 'The launch time in ISO 8601 format',
+        example: '2025-01-10T14:30:00.000Z',
+        type: String
+    })
+    @IsNotEmpty()
+    @IsString()
+    time: string;  // Changed to string type
+}
 
 @ApiTags('presale')
 @Controller('presale')
@@ -23,23 +36,28 @@ export class PresaleController {
 
     @Get('status')
     async getPresaleStatus() {
-        const chains = await this.tokenService.getAllChainsStatus();
+        try {
+            const chains = await this.tokenService.getAllChainsStatus();
 
-        // Calculate cumulative totals
-        const totalBought = chains.reduce((sum, chain) =>
-            sum + BigInt(chain.totalBought), BigInt(0)
-        ).toString();
+            // Calculate cumulative totals
+            const totalBought = chains.reduce((sum, chain) =>
+                sum + BigInt(chain.totalBought), BigInt(0)
+            ).toString();
 
-        const currentPhase = this.tokenService.calculatePhase(totalBought);
-        const phaseConfig = this.tokenService.getPhaseConfig(currentPhase);
+            const currentPhase = this.tokenService.calculatePhase(totalBought);
+            const phaseConfig = this.tokenService.getPhaseConfig(currentPhase);
 
-        return {
-            chains,
-            totalBought,
-            currentPhase,
-            priceInUsd: phaseConfig.priceInUsd,
-            totalTokensForSale: phaseConfig.totalTokensForSale
-        };
+            return {
+                chains,
+                totalBought,
+                currentPhase,
+                priceInUsd: phaseConfig.priceInUsd,
+                totalTokensForSale: phaseConfig.totalTokensForSale
+            };
+        } catch (err) {
+            console.log('err', err)
+            return err
+        }
     }
 
     @Get('details')
@@ -55,7 +73,7 @@ export class PresaleController {
             const currentPhase = this.tokenService.calculatePhase(totalBought);
             const phaseConfig = this.tokenService.getPhaseConfig(currentPhase);
 
-            console.log('phaseConfig',phaseConfig)
+            console.log('phaseConfig', phaseConfig)
             let totalRaisedInUsd = 0
 
             for (let i = 1; i <= currentPhase; i++) {
@@ -78,6 +96,8 @@ export class PresaleController {
             const totalHolders = await this.phaseService.getTotalBuyersAllChains()
             const isLive = await this.phaseService.getIsLiveAllChains()
 
+            const launchTime = await this.tokenService.getLaunchTime();
+
             return {
                 totalBought: formatEther(totalBought),
                 currentPhase,
@@ -85,7 +105,8 @@ export class PresaleController {
                 tokenToNextPhase: formatEther(phaseConfig.tokensForPhase),
                 totalRaisedInUsd,
                 totalHolders,
-                isLive
+                isLive,
+                launchTime
             };
         } catch (err) {
             console.log('err', err)
@@ -93,5 +114,19 @@ export class PresaleController {
         }
     }
 
+    @Post('launch-time')
+    @ApiOperation({ summary: 'Set launch date and time' })
+    async setLaunchTime(@Body() launchTimeDto: SetLaunchTimeDto) {
+        try {
+            const date = new Date(launchTimeDto.time);
+            if (isNaN(date.getTime())) {
+                throw new Error('Invalid date format');
+            }
+            return await this.tokenService.setLaunchTime(date);
+        } catch (err) {
+            console.log('err', err);
+            throw err;
+        }
+    }
 
 }

@@ -68,6 +68,27 @@ let TokenService = class TokenService {
         });
         return chainTokens.reduce((sum, token) => sum + BigInt(token.totalBought), BigInt(0));
     }
+    async setLaunchTime(time) {
+        const existingLaunchTime = await this.prisma.launchTime.findFirst();
+        if (existingLaunchTime) {
+            return await this.prisma.launchTime.update({
+                where: { id: existingLaunchTime.id },
+                data: { time },
+            });
+        }
+        else {
+            return await this.prisma.launchTime.create({
+                data: { time },
+            });
+        }
+    }
+    async getLaunchTime() {
+        const launchTime = await this.prisma.launchTime.findFirst();
+        if (launchTime) {
+            return launchTime.time;
+        }
+        return null;
+    }
     async getOldPhase(chainTokenId) {
         const oldRecord = await this.prisma.chainToken.findUnique({
             where: { id: chainTokenId }

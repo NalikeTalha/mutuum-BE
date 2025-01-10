@@ -79,6 +79,32 @@ export class TokenService {
         );
     }
 
+    async setLaunchTime(time: Date) {
+        // Check if a LaunchTime record already exists
+        const existingLaunchTime = await this.prisma.launchTime.findFirst();
+
+        if (existingLaunchTime) {
+            // Update the existing record
+            return await this.prisma.launchTime.update({
+                where: { id: existingLaunchTime.id },
+                data: { time },
+            });
+        } else {
+            // Create a new record
+            return await this.prisma.launchTime.create({
+                data: { time },
+            });
+        }
+    }
+
+    async getLaunchTime() {
+        const launchTime = await this.prisma.launchTime.findFirst();
+        if(launchTime){
+            return launchTime.time
+        }
+        return null;
+    }
+    
 
     private async getOldPhase(chainTokenId: number) {
         const oldRecord = await this.prisma.chainToken.findUnique({

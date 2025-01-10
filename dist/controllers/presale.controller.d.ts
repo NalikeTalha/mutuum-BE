@@ -1,6 +1,9 @@
 import { PhaseConfig } from "src/global.config";
 import { PhaseService } from "src/services/phase.service";
 import { TokenService } from "src/services/token.service";
+declare class SetLaunchTimeDto {
+    time: string;
+}
 export declare class PresaleController {
     private readonly tokenService;
     private readonly phaseService;
@@ -8,16 +11,11 @@ export declare class PresaleController {
     getPhases(): Promise<{
         phases: Record<number, PhaseConfig>;
     }>;
-    getPresaleStatus(): Promise<{
-        chains: {
-            address: string;
-            chainId: number;
-            totalBought: string;
-        }[];
-        totalBought: string;
-        currentPhase: number;
-        priceInUsd: string;
-        totalTokensForSale: string;
-    }>;
+    getPresaleStatus(): Promise<any>;
     getPresaleDetails(): Promise<any>;
+    setLaunchTime(launchTimeDto: SetLaunchTimeDto): Promise<{
+        id: number;
+        time: Date;
+    }>;
 }
+export {};

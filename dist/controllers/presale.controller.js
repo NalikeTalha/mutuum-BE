@@ -8,14 +8,30 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PresaleController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_1 = require("class-validator");
 const ethers_1 = require("ethers");
 const global_config_1 = require("../global.config");
 const phase_service_1 = require("../services/phase.service");
 const token_service_1 = require("../services/token.service");
+class SetLaunchTimeDto {
+}
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'The launch time in ISO 8601 format',
+        example: '2025-01-10T14:30:00.000Z',
+        type: String
+    }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], SetLaunchTimeDto.prototype, "time", void 0);
 let PresaleController = class PresaleController {
     constructor(tokenService, phaseService) {
         this.tokenService = tokenService;
@@ -27,17 +43,23 @@ let PresaleController = class PresaleController {
         };
     }
     async getPresaleStatus() {
-        const chains = await this.tokenService.getAllChainsStatus();
-        const totalBought = chains.reduce((sum, chain) => sum + BigInt(chain.totalBought), BigInt(0)).toString();
-        const currentPhase = this.tokenService.calculatePhase(totalBought);
-        const phaseConfig = this.tokenService.getPhaseConfig(currentPhase);
-        return {
-            chains,
-            totalBought,
-            currentPhase,
-            priceInUsd: phaseConfig.priceInUsd,
-            totalTokensForSale: phaseConfig.totalTokensForSale
-        };
+        try {
+            const chains = await this.tokenService.getAllChainsStatus();
+            const totalBought = chains.reduce((sum, chain) => sum + BigInt(chain.totalBought), BigInt(0)).toString();
+            const currentPhase = this.tokenService.calculatePhase(totalBought);
+            const phaseConfig = this.tokenService.getPhaseConfig(currentPhase);
+            return {
+                chains,
+                totalBought,
+                currentPhase,
+                priceInUsd: phaseConfig.priceInUsd,
+                totalTokensForSale: phaseConfig.totalTokensForSale
+            };
+        }
+        catch (err) {
+            console.log('err', err);
+            return err;
+        }
     }
     async getPresaleDetails() {
         try {
@@ -68,6 +90,7 @@ let PresaleController = class PresaleController {
             }
             const totalHolders = await this.phaseService.getTotalBuyersAllChains();
             const isLive = await this.phaseService.getIsLiveAllChains();
+            const launchTime = await this.tokenService.getLaunchTime();
             return {
                 totalBought: (0, ethers_1.formatEther)(totalBought),
                 currentPhase,
@@ -75,12 +98,26 @@ let PresaleController = class PresaleController {
                 tokenToNextPhase: (0, ethers_1.formatEther)(phaseConfig.tokensForPhase),
                 totalRaisedInUsd,
                 totalHolders,
-                isLive
+                isLive,
+                launchTime
             };
         }
         catch (err) {
             console.log('err', err);
             return err;
+        }
+    }
+    async setLaunchTime(launchTimeDto) {
+        try {
+            const date = new Date(launchTimeDto.time);
+            if (isNaN(date.getTime())) {
+                throw new Error('Invalid date format');
+            }
+            return await this.tokenService.setLaunchTime(date);
+        }
+        catch (err) {
+            console.log('err', err);
+            throw err;
         }
     }
 };
@@ -103,6 +140,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PresaleController.prototype, "getPresaleDetails", null);
+__decorate([
+    (0, common_1.Post)('launch-time'),
+    (0, swagger_1.ApiOperation)({ summary: 'Set launch date and time' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [SetLaunchTimeDto]),
+    __metadata("design:returntype", Promise)
+], PresaleController.prototype, "setLaunchTime", null);
 exports.PresaleController = PresaleController = __decorate([
     (0, swagger_1.ApiTags)('presale'),
     (0, common_1.Controller)('presale'),
