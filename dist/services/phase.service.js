@@ -96,7 +96,7 @@ let PhaseService = class PhaseService {
                 .map(async ([chainId, contract]) => {
                 try {
                     console.log(`Fetching isLive from chainId: ${chainId}`);
-                    const nativePrice = (0, ethers_1.formatEther)((await contract.getETHPrice()).toString());
+                    const nativePrice = Number((0, ethers_1.formatEther)((await contract.getETHPrice()).toString())) / priceInUsd;
                     console.log(`isLive on chain ${chainId}:`, nativePrice.toString());
                     return { chainId, nativePrice };
                 }

@@ -101,7 +101,7 @@ export class PhaseService implements OnModuleInit {
                 .map(async ([chainId, contract]) => {
                     try {
                         console.log(`Fetching isLive from chainId: ${chainId}`);
-                        const nativePrice = formatEther((await contract.getETHPrice()).toString());
+                        const nativePrice = Number(formatEther((await contract.getETHPrice()).toString()))/priceInUsd;
                         console.log(`isLive on chain ${chainId}:`, nativePrice.toString());
                         return { chainId, nativePrice };
                     } catch (error) {
