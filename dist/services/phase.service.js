@@ -90,6 +90,32 @@ let PhaseService = class PhaseService {
         console.log('isAllLive', isAllLive);
         return isAllLive;
     }
+    async getNativePrices(priceInUsd) {
+        try {
+            const getNativePrices = Array.from(this.contracts.entries())
+                .map(async ([chainId, contract]) => {
+                try {
+                    console.log(`Fetching isLive from chainId: ${chainId}`);
+                    const nativePrice = (0, ethers_1.formatEther)((await contract.getETHPrice()).toString());
+                    console.log(`isLive on chain ${chainId}:`, nativePrice.toString());
+                    return { chainId, nativePrice };
+                }
+                catch (error) {
+                    console.error(`Failed to fetch isLive on chain ${chainId}:`, error);
+                    return { chainId, nativePrice: 0 };
+                }
+            });
+            const results = await Promise.all(getNativePrices);
+            const nativePrices = results.reduce((acc, { chainId, nativePrice }) => {
+                acc[chainId] = nativePrice;
+                return acc;
+            }, {});
+            return nativePrices;
+        }
+        catch (err) {
+            console.log('err', err);
+        }
+    }
 };
 exports.PhaseService = PhaseService;
 exports.PhaseService = PhaseService = __decorate([

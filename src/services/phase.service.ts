@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
-import { ethers } from "ethers";
+import { ethers, formatEther, parseEther } from "ethers";
 import { abi as mutuumPresaleAbi } from "src/abis/MutuumPresale.abi";
 import { CHAIN_CONFIGS } from "src/global.config";
 
@@ -93,5 +93,34 @@ export class PhaseService implements OnModuleInit {
         console.log('isAllLive',isAllLive); 
 
         return isAllLive;
+    }
+
+    async getNativePrices(priceInUsd: number): Promise<any> {
+        try {
+            const getNativePrices = Array.from(this.contracts.entries())
+                .map(async ([chainId, contract]) => {
+                    try {
+                        console.log(`Fetching isLive from chainId: ${chainId}`);
+                        const nativePrice = formatEther((await contract.getETHPrice()).toString());
+                        console.log(`isLive on chain ${chainId}:`, nativePrice.toString());
+                        return { chainId, nativePrice };
+                    } catch (error) {
+                        console.error(`Failed to fetch isLive on chain ${chainId}:`, error);
+                        return { chainId, nativePrice: 0 }; // Return 0 if the call fails
+                    }
+                });
+    
+            const results = await Promise.all(getNativePrices);
+    
+            // Convert the array of results to an object
+            const nativePrices = results.reduce((acc, { chainId, nativePrice }) => {
+                acc[chainId] = nativePrice;
+                return acc;
+            }, {});
+    
+            return nativePrices;
+        } catch (err) {
+            console.log('err', err);
+        }
     }
 }

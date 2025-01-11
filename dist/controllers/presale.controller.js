@@ -90,6 +90,8 @@ let PresaleController = class PresaleController {
             }
             const totalHolders = await this.phaseService.getTotalBuyersAllChains();
             const isLive = await this.phaseService.getIsLiveAllChains();
+            const nativePrices = await this.phaseService.getNativePrices(Number((0, ethers_1.formatEther)(phaseConfig.priceInUsd)));
+            console.log('nativePrices', nativePrices);
             const launchTime = await this.tokenService.getLaunchTime();
             return {
                 totalBought: (0, ethers_1.formatEther)(totalBought),
@@ -99,7 +101,8 @@ let PresaleController = class PresaleController {
                 totalRaisedInUsd,
                 totalHolders,
                 isLive,
-                launchTime
+                launchTime,
+                nativePrices: { ...nativePrices }
             };
         }
         catch (err) {

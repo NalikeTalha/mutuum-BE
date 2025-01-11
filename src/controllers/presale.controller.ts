@@ -95,6 +95,8 @@ export class PresaleController {
 
             const totalHolders = await this.phaseService.getTotalBuyersAllChains()
             const isLive = await this.phaseService.getIsLiveAllChains()
+            const nativePrices = await this.phaseService.getNativePrices(Number(formatEther(phaseConfig.priceInUsd)))
+            console.log('nativePrices', nativePrices)   
 
             const launchTime = await this.tokenService.getLaunchTime();
 
@@ -106,7 +108,8 @@ export class PresaleController {
                 totalRaisedInUsd,
                 totalHolders,
                 isLive,
-                launchTime
+                launchTime,
+                nativePrices: {...nativePrices}
             };
         } catch (err) {
             console.log('err', err)
