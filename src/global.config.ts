@@ -61,9 +61,9 @@ export interface PhaseConfig {
 
 export const PHASES: Record<number, PhaseConfig> = {
     1: {
-        tokensForPhase: parseEther('1000').toString(),
+        tokensForPhase: parseEther('5000').toString(),
         priceInUsd: parseEther('0.001').toString(),
-        totalTokensForSale: parseEther('1000').toString()
+        totalTokensForSale: parseEther('5000').toString()
     },
     2: {
         tokensForPhase: parseEther('11000').toString(),

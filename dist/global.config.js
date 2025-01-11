@@ -35,9 +35,9 @@ console.log('process.env.IS_LIVE', process.env.IS_LIVE);
 exports.CHAIN_CONFIGS = process.env.IS_LIVE == 'true' ? exports.CHAIN_CONFIGS_PROD : exports.CHAIN_CONFIGS_DEV;
 exports.PHASES = {
     1: {
-        tokensForPhase: (0, ethers_1.parseEther)('1000').toString(),
+        tokensForPhase: (0, ethers_1.parseEther)('5000').toString(),
         priceInUsd: (0, ethers_1.parseEther)('0.001').toString(),
-        totalTokensForSale: (0, ethers_1.parseEther)('1000').toString()
+        totalTokensForSale: (0, ethers_1.parseEther)('5000').toString()
     },
     2: {
         tokensForPhase: (0, ethers_1.parseEther)('11000').toString(),
