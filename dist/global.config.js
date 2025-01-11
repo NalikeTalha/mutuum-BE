@@ -5,12 +5,12 @@ const ethers_1 = require("ethers");
 exports.CHAIN_CONFIGS_DEV = [
     {
         "chainId": 97,
-        "rpcUrl": "https://bsc-testnet.infura.io/v3/2c3a1602edd64164b85fab409c12046b",
+        "rpcUrl": "https://bsc-testnet.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
         "contractAddress": "0xbA0805271367f8F88917a15eb1FE216CD15a9743"
     },
     {
         "chainId": 11155111,
-        "rpcUrl": "https://sepolia.infura.io/v3/2c3a1602edd64164b85fab409c12046b",
+        "rpcUrl": "https://sepolia.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
         "contractAddress": "0xe4D9c42477B67Abf2372188c4a2B9948ca054911"
     },
 ];

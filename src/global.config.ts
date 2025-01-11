@@ -11,19 +11,19 @@ export const CHAIN_CONFIGS_DEV: ChainConfig[] = [
     {
         //bsc testnet
         "chainId": 97,
-        "rpcUrl": "https://bsc-testnet.infura.io/v3/2c3a1602edd64164b85fab409c12046b",
+        "rpcUrl": "https://bsc-testnet.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
         "contractAddress": "0xbA0805271367f8F88917a15eb1FE216CD15a9743"
     },
     {
         // eth sepolia
         "chainId": 11155111,
-        "rpcUrl": "https://sepolia.infura.io/v3/2c3a1602edd64164b85fab409c12046b",
+        "rpcUrl": "https://sepolia.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
         "contractAddress": "0xe4D9c42477B67Abf2372188c4a2B9948ca054911"
     },
     // {
     //     // base sepolia
     //     "chainId": 84532,
-    //     "rpcUrl": "https://base-sepolia.infura.io/v3/2c3a1602edd64164b85fab409c12046b",
+    //     "rpcUrl": "https://base-sepolia.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
     //     "contractAddress": "0x89de37f99a0ea5a6594eda4ee567d97e1b8111d9"
     // }
 ]
