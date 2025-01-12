@@ -133,7 +133,7 @@ let TokenService = class TokenService {
     async handlePhaseTransition(phase, address) {
         const phaseConfig = global_config_1.PHASES[phase];
         try {
-            await this.phaseService.setSaleParamsAllChains(phaseConfig.priceInUsd, phaseConfig.totalTokensForSale);
+            await this.phaseService.setSaleParamsAllChains(phaseConfig.priceInUsd, (Number(phaseConfig.totalTokensForSale) * 2).toLocaleString('fullwide', { useGrouping: false }));
         }
         catch (error) {
             console.error(`Failed to handle phase transition to phase ${phase}:`, error);

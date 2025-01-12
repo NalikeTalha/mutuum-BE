@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { PHASES } from 'src/global.config';
 import { PhaseService } from './phase.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 interface PhaseConfig {
     tokensForPhase: string;
@@ -162,7 +163,7 @@ export class TokenService {
         try {
             await this.phaseService.setSaleParamsAllChains(
                 phaseConfig.priceInUsd,
-                phaseConfig.totalTokensForSale
+                (Number(phaseConfig.totalTokensForSale)*2).toLocaleString('fullwide', { useGrouping: false }),
             );
         } catch (error) {
             console.error(`Failed to handle phase transition to phase ${phase}:`, error);
@@ -197,5 +198,16 @@ export class TokenService {
         }
         return phaseConfig;
     }
+
+    // @Cron('*/30 * * * * *')
+    // async handleCron() {
+    //     console.log('Running cron job every 30 seconds');
+    //     try {
+    //         const totalSoldArray = await this.phaseService.getLatestSold();
+    //         await this.updateMultipleDBSupplies(totalSoldArray);
+    //     } catch (error) {
+    //         console.error('Error in cron job:', error);
+    //     }
+    // }
 
 }
