@@ -11,6 +11,7 @@ export declare class PresaleController {
     getPhases(): Promise<{
         phases: Record<number, PhaseConfig>;
     }>;
+    recordTransaction(): Promise<any>;
     getPresaleStatus(): Promise<any>;
     getPresaleDetails(): Promise<any>;
     setLaunchTime(launchTimeDto: SetLaunchTimeDto): Promise<{

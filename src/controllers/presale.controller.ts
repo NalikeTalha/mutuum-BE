@@ -34,6 +34,18 @@ export class PresaleController {
         }
     }
 
+    @Get('refreshDBSupplyAndPhase')
+    async recordTransaction() {
+        try{
+            const totalSoldArray = await this.phaseService.getLatestSold();
+            await this.tokenService.updateMultipleDBSupplies(totalSoldArray);
+            return true
+        }catch(err){
+            console.log('err', err)
+            return err
+        }
+    }
+
     @Get('status')
     async getPresaleStatus() {
         try {
@@ -131,5 +143,6 @@ export class PresaleController {
             throw err;
         }
     }
+
 
 }

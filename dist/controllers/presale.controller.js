@@ -42,6 +42,17 @@ let PresaleController = class PresaleController {
             phases: global_config_1.PHASES
         };
     }
+    async recordTransaction() {
+        try {
+            const totalSoldArray = await this.phaseService.getLatestSold();
+            await this.tokenService.updateMultipleDBSupplies(totalSoldArray);
+            return true;
+        }
+        catch (err) {
+            console.log('err', err);
+            return err;
+        }
+    }
     async getPresaleStatus() {
         try {
             const chains = await this.tokenService.getAllChainsStatus();
@@ -131,6 +142,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PresaleController.prototype, "getPhases", null);
+__decorate([
+    (0, common_1.Get)('refreshDBSupplyAndPhase'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PresaleController.prototype, "recordTransaction", null);
 __decorate([
     (0, common_1.Get)('status'),
     __metadata("design:type", Function),

@@ -62,6 +62,30 @@ let TokenService = class TokenService {
         });
         return chainToken;
     }
+    async updateMultipleDBSupplies(supplyData) {
+        for (const [chainId, totalSold] of Object.entries(supplyData)) {
+            await this.updateDBSupply({ chainId: Number(chainId), totalSold });
+        }
+        const result = await this.prisma.$queryRaw `SELECT SUM(CAST("totalBought" AS NUMERIC)) AS "sumTotalBought"
+                  FROM "ChainToken"`;
+        ;
+        const cumulativeTotal = result[0].sumTotalBought;
+        const newPhase = this.calculatePhase(cumulativeTotal.toString());
+        const chainToken = await this.prisma.chainToken.findFirst();
+        if (chainToken && newPhase > chainToken.phase) {
+            await this.handlePhaseTransition(newPhase, chainToken.address);
+            await this.prisma.chainToken.updateMany({
+                data: { phase: newPhase }
+            });
+        }
+        return { chainToken, phase: newPhase };
+    }
+    async updateDBSupply({ chainId, totalSold }) {
+        return await this.prisma.chainToken.update({
+            where: { chainId },
+            data: { totalBought: totalSold }
+        });
+    }
     async getCumulativeTotalBought() {
         const chainTokens = await this.prisma.chainToken.findMany({
             select: { totalBought: true }
@@ -97,7 +121,7 @@ let TokenService = class TokenService {
     }
     calculatePhase(totalBought) {
         let phase = 1;
-        const total = BigInt(totalBought);
+        const total = BigInt(Number(totalBought).toLocaleString('fullwide', { useGrouping: false }));
         for (const [p, config] of Object.entries(global_config_1.PHASES)) {
             if (total < BigInt(config.tokensForPhase)) {
                 break;

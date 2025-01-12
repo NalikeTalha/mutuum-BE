@@ -32,7 +32,7 @@ export class TokenService {
             }
         });
     }
-    
+
     async recordTradeAndUpdate(chainId: number, user: string, tradeAmount: string, newTotal: string) {
         const chainToken = await this.prisma.$transaction(async (tx) => {
             const existingToken = await tx.chainToken.findFirst({ where: { chainId } });
@@ -68,6 +68,36 @@ export class TokenService {
         return chainToken;
     }
 
+    async updateMultipleDBSupplies(supplyData: Record<number, string>) {
+        for (const [chainId, totalSold] of Object.entries(supplyData)) {
+            await this.updateDBSupply({ chainId: Number(chainId), totalSold });
+        }
+        const result = await this.prisma.$queryRaw
+            `SELECT SUM(CAST("totalBought" AS NUMERIC)) AS "sumTotalBought"
+                  FROM "ChainToken"`;
+        ;
+        const cumulativeTotal = result[0].sumTotalBought
+
+        const newPhase = this.calculatePhase(cumulativeTotal.toString());
+
+        const chainToken = await this.prisma.chainToken.findFirst();
+        if (chainToken && newPhase > chainToken.phase) {
+            await this.handlePhaseTransition(newPhase, chainToken.address);
+            await this.prisma.chainToken.updateMany({
+                data: { phase: newPhase }
+            });
+        }
+
+        return { chainToken, phase: newPhase };
+    }
+
+    async updateDBSupply({ chainId, totalSold }: { chainId: number; totalSold: string }) {
+        return await this.prisma.chainToken.update({
+            where: { chainId },
+            data: { totalBought: totalSold }
+        });
+    }
+
     async getCumulativeTotalBought(): Promise<bigint> {
         const chainTokens = await this.prisma.chainToken.findMany({
             select: { totalBought: true }
@@ -99,12 +129,12 @@ export class TokenService {
 
     async getLaunchTime() {
         const launchTime = await this.prisma.launchTime.findFirst();
-        if(launchTime){
+        if (launchTime) {
             return launchTime.time
         }
         return null;
     }
-    
+
 
     private async getOldPhase(chainTokenId: number) {
         const oldRecord = await this.prisma.chainToken.findUnique({
@@ -115,8 +145,7 @@ export class TokenService {
 
     public calculatePhase(totalBought: string): number {
         let phase = 1;
-        const total = BigInt(totalBought);
-
+        const total = BigInt(Number(totalBought).toLocaleString('fullwide', { useGrouping: false }));
         for (const [p, config] of Object.entries(PHASES)) {
             if (total < BigInt(config.tokensForPhase)) {
                 break;

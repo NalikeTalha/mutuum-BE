@@ -28,6 +28,28 @@ export declare class TokenService {
         };
         phase: number;
     }>;
+    updateMultipleDBSupplies(supplyData: Record<number, string>): Promise<{
+        chainToken: {
+            address: string;
+            chainId: number;
+            id: number;
+            totalBought: string;
+            lastUpdated: Date;
+            phase: number;
+        };
+        phase: number;
+    }>;
+    updateDBSupply({ chainId, totalSold }: {
+        chainId: number;
+        totalSold: string;
+    }): Promise<{
+        address: string;
+        chainId: number;
+        id: number;
+        totalBought: string;
+        lastUpdated: Date;
+        phase: number;
+    }>;
     getCumulativeTotalBought(): Promise<bigint>;
     setLaunchTime(time: Date): Promise<{
         id: number;
