@@ -12,13 +12,13 @@ export const CHAIN_CONFIGS_DEV: ChainConfig[] = [
         //bsc testnet
         "chainId": 97,
         "rpcUrl": "https://bsc-testnet.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
-        "contractAddress": "0xbA0805271367f8F88917a15eb1FE216CD15a9743"
+        "contractAddress": "0x4fFB58E8C97f408bD0D81E93966EbD1D4d7B56B7"
     },
     {
         // eth sepolia
         "chainId": 11155111,
         "rpcUrl": "https://sepolia.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
-        "contractAddress": "0xe4D9c42477B67Abf2372188c4a2B9948ca054911"
+        "contractAddress": "0x5D4279c7AC752C01aeEcE33809e19c4E449ebF74"
     },
     // {
     //     // base sepolia

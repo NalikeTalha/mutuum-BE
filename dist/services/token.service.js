@@ -21,19 +21,23 @@ let TokenService = class TokenService {
     }
     async initializeChainToken(chainId, address, totalBought) {
         const phase = this.calculatePhase(totalBought);
-        return this.prisma.chainToken.upsert({
-            where: { chainId_address: { chainId, address } },
-            create: {
-                chainId,
-                address,
-                totalBought,
-                phase
-            },
-            update: {
-                totalBought,
-                phase
-            }
-        });
+        const chainDetails = await this.prisma.chainToken.findFirst({ where: { chainId } });
+        if (chainDetails) {
+            return await this.prisma.chainToken.update({
+                where: { chainId },
+                data: { totalBought, phase, address }
+            });
+        }
+        else {
+            return this.prisma.chainToken.create({
+                data: {
+                    chainId,
+                    address,
+                    totalBought,
+                    phase
+                }
+            });
+        }
     }
     async recordTradeAndUpdate(chainId, user, tradeAmount, newTotal) {
         const chainToken = await this.prisma.$transaction(async (tx) => {
