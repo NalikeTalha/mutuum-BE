@@ -115,6 +115,7 @@ export class PresaleController {
             return {
                 totalBought: formatEther(totalBought),
                 currentPhase,
+                tokenForLastPhase: Number(formatEther(phaseConfig.tokensForPhase))-Number(formatEther(phaseConfig.totalTokensForSale)),
                 priceInUsd: formatEther(phaseConfig.priceInUsd),
                 tokenToNextPhase: formatEther(phaseConfig.tokensForPhase),
                 totalRaisedInUsd,

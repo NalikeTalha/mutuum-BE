@@ -107,6 +107,7 @@ let PresaleController = class PresaleController {
             return {
                 totalBought: (0, ethers_1.formatEther)(totalBought),
                 currentPhase,
+                tokenForLastPhase: Number((0, ethers_1.formatEther)(phaseConfig.tokensForPhase)) - Number((0, ethers_1.formatEther)(phaseConfig.totalTokensForSale)),
                 priceInUsd: (0, ethers_1.formatEther)(phaseConfig.priceInUsd),
                 tokenToNextPhase: (0, ethers_1.formatEther)(phaseConfig.tokensForPhase),
                 totalRaisedInUsd,
