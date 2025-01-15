@@ -58,6 +58,7 @@ let TokenService = class TokenService {
             const cumulativeTotal = result[0].sumTotalBought;
             const newPhase = this.calculatePhase(cumulativeTotal.toString());
             if (newPhase > chainToken.phase) {
+                console.log('Phase transition detected:', chainToken.phase, '->', newPhase);
                 await this.handlePhaseTransition(newPhase, chainToken.address);
                 await tx.chainToken.updateMany({
                     data: { phase: newPhase }
@@ -78,6 +79,7 @@ let TokenService = class TokenService {
         const newPhase = this.calculatePhase(cumulativeTotal.toString());
         const chainToken = await this.prisma.chainToken.findFirst();
         if (chainToken && newPhase > chainToken.phase) {
+            console.log('Phase transition detected:', chainToken.phase, '->', newPhase);
             await this.handlePhaseTransition(newPhase, chainToken.address);
             await this.prisma.chainToken.updateMany({
                 data: { phase: newPhase }
