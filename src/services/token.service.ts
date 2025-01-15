@@ -167,8 +167,7 @@ export class TokenService {
 
         try {
             await this.phaseService.setSaleParamsAllChains(
-                phaseConfig.priceInUsd,
-                (Number(phaseConfig.totalTokensForSale)*2).toLocaleString('fullwide', { useGrouping: false }),
+                phaseConfig.priceInUsd
             );
         } catch (error) {
             console.error(`Failed to handle phase transition to phase ${phase}:`, error);

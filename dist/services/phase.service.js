@@ -30,7 +30,7 @@ let PhaseService = class PhaseService {
             this.wallets.set(chain.chainId, wallet);
         }
     }
-    async setSaleParamsAllChains(priceInUsd, totalTokensForSale) {
+    async setSaleParamsAllChains(priceInUsd) {
         const setParamsPromises = Array.from(this.contracts.entries())
             .map(async ([chainId, contract]) => {
             const maxRetries = 5;
@@ -38,8 +38,8 @@ let PhaseService = class PhaseService {
             while (attempt < maxRetries) {
                 try {
                     console.log(`setting following parameters to chainId: ${chainId}`);
-                    console.log(`priceInUsd: ${priceInUsd} totalTokensForSale: ${totalTokensForSale}`);
-                    const tx = await contract.setSaleParams(priceInUsd, totalTokensForSale);
+                    console.log(`priceInUsd: ${priceInUsd}`);
+                    const tx = await contract.setSaleParams(priceInUsd);
                     console.log('tx.hash', tx.hash);
                     await tx.wait();
                     console.log(`Phase updated on chain ${chainId}: ${tx.hash}`);

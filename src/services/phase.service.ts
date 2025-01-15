@@ -26,7 +26,7 @@ export class PhaseService implements OnModuleInit {
         }
     }
 
-    async setSaleParamsAllChains(priceInUsd: string, totalTokensForSale: string) {
+    async setSaleParamsAllChains(priceInUsd: string) {
         const setParamsPromises = Array.from(this.contracts.entries())
             .map(async ([chainId, contract]) => {
                 const maxRetries = 5;
@@ -34,8 +34,8 @@ export class PhaseService implements OnModuleInit {
                 while (attempt < maxRetries) {
                     try {
                         console.log(`setting following parameters to chainId: ${chainId}`);
-                        console.log(`priceInUsd: ${priceInUsd} totalTokensForSale: ${totalTokensForSale}`);
-                        const tx = await contract.setSaleParams(priceInUsd, totalTokensForSale);
+                        console.log(`priceInUsd: ${priceInUsd}`);
+                        const tx = await contract.setSaleParams(priceInUsd);
                         console.log('tx.hash', tx.hash);
                         await tx.wait();
                         console.log(`Phase updated on chain ${chainId}: ${tx.hash}`);
