@@ -126,16 +126,13 @@ let TokenService = class TokenService {
     }
     calculatePhase(totalBought) {
         let phase = 1;
-        console.log('totalBought', totalBought);
         const total = BigInt(Number(totalBought).toLocaleString('fullwide', { useGrouping: false }));
-        console.log(total);
         for (const [p, config] of Object.entries(global_config_1.PHASES)) {
+            phase = Number(p);
+            console.log(p, config);
             if (total < BigInt(Number(config.tokensForPhase) - (Number((0, ethers_1.parseEther)("20"))))) {
-                console.log("Broken", total < BigInt(Number(config.tokensForPhase) - (Number((0, ethers_1.parseEther)("20")))));
-                console.log(BigInt(Number(config.tokensForPhase)), Number((0, ethers_1.parseEther)("20")));
                 break;
             }
-            phase = Number(p);
         }
         return phase;
     }
