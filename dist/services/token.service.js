@@ -65,7 +65,7 @@ let TokenService = class TokenService {
                 });
             }
             return { chainToken, phase: newPhase };
-        });
+        }, { timeout: 30000 });
         return chainToken;
     }
     async updateMultipleDBSupplies(supplyData) {
