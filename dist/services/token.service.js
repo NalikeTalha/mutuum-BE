@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("./prisma.service");
 const global_config_1 = require("../global.config");
 const phase_service_1 = require("./phase.service");
+const ethers_1 = require("ethers");
 let TokenService = class TokenService {
     constructor(prisma, phaseService) {
         this.prisma = prisma;
@@ -127,7 +128,7 @@ let TokenService = class TokenService {
         let phase = 1;
         const total = BigInt(Number(totalBought).toLocaleString('fullwide', { useGrouping: false }));
         for (const [p, config] of Object.entries(global_config_1.PHASES)) {
-            if (total < BigInt(config.tokensForPhase)) {
+            if (total < BigInt(Number(config.tokensForPhase) - (Number((0, ethers_1.parseEther)("20"))))) {
                 break;
             }
             phase = Number(p);

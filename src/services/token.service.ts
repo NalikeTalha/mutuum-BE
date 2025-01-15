@@ -3,6 +3,7 @@ import { PrismaService } from './prisma.service';
 import { PHASES } from 'src/global.config';
 import { PhaseService } from './phase.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { parseEther } from 'ethers';
 
 interface PhaseConfig {
     tokensForPhase: string;
@@ -152,7 +153,7 @@ export class TokenService {
         let phase = 1;
         const total = BigInt(Number(totalBought).toLocaleString('fullwide', { useGrouping: false }));
         for (const [p, config] of Object.entries(PHASES)) {
-            if (total < BigInt(config.tokensForPhase)) {
+            if (total < BigInt(Number(config.tokensForPhase)- (Number(parseEther("20"))))) {
                 break;
             }
             phase = Number(p);
