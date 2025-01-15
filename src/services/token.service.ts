@@ -151,9 +151,13 @@ export class TokenService {
 
     public calculatePhase(totalBought: string): number {
         let phase = 1;
+        console.log('totalBought', totalBought)
         const total = BigInt(Number(totalBought).toLocaleString('fullwide', { useGrouping: false }));
+        console.log(total)
         for (const [p, config] of Object.entries(PHASES)) {
             if (total < BigInt(Number(config.tokensForPhase)- (Number(parseEther("20"))))) {
+                console.log("Broken",total < BigInt(Number(config.tokensForPhase)- (Number(parseEther("20")))))
+                console.log(BigInt(Number(config.tokensForPhase)), Number(parseEther("20")))
                 break;
             }
             phase = Number(p);
