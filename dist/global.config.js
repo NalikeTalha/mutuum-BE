@@ -51,13 +51,38 @@ exports.PHASES = {
     },
     4: {
         tokensForPhase: (0, ethers_1.parseEther)('44000').toString(),
-        priceInUsd: (0, ethers_1.parseEther)('0.1').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.03').toString(),
         totalTokensForSale: (0, ethers_1.parseEther)('22000').toString()
     },
     5: {
         tokensForPhase: (0, ethers_1.parseEther)('88000').toString(),
-        priceInUsd: (0, ethers_1.parseEther)('0.1').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.4').toString(),
         totalTokensForSale: (0, ethers_1.parseEther)('44000').toString()
+    },
+    6: {
+        tokensForPhase: (0, ethers_1.parseEther)('108000').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.05').toString(),
+        totalTokensForSale: (0, ethers_1.parseEther)('22000').toString()
+    },
+    7: {
+        tokensForPhase: (0, ethers_1.parseEther)('128000').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.06').toString(),
+        totalTokensForSale: (0, ethers_1.parseEther)('22000').toString()
+    },
+    8: {
+        tokensForPhase: (0, ethers_1.parseEther)('148000').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.07').toString(),
+        totalTokensForSale: (0, ethers_1.parseEther)('22000').toString()
+    },
+    9: {
+        tokensForPhase: (0, ethers_1.parseEther)('168000').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.08').toString(),
+        totalTokensForSale: (0, ethers_1.parseEther)('22000').toString()
+    },
+    10: {
+        tokensForPhase: (0, ethers_1.parseEther)('188000').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.09').toString(),
+        totalTokensForSale: (0, ethers_1.parseEther)('22000').toString()
     },
 };
 //# sourceMappingURL=global.config.js.map
