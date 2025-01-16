@@ -144,7 +144,7 @@ export class TokenService {
 
     public getTokenForNextPhase(phase: number):string {
         let tokenForNextPhase = Number(PHASES[phase].totalTokensForSale);
-        for (let i = 1; i <= phase; i++) {
+        for (let i = 2; i <= phase; i++) {
             tokenForNextPhase += Number(PHASES[i].totalTokensForSale);
         }
         return tokenForNextPhase.toLocaleString('fullwide', { useGrouping: false });

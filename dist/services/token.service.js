@@ -122,7 +122,7 @@ let TokenService = class TokenService {
     }
     getTokenForNextPhase(phase) {
         let tokenForNextPhase = Number(global_config_1.PHASES[phase].totalTokensForSale);
-        for (let i = 1; i <= phase; i++) {
+        for (let i = 2; i <= phase; i++) {
             tokenForNextPhase += Number(global_config_1.PHASES[i].totalTokensForSale);
         }
         return tokenForNextPhase.toLocaleString('fullwide', { useGrouping: false });
