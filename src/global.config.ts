@@ -82,32 +82,32 @@ export const PHASES: Record<number, PhaseConfig> = {
     },
     5: {
         tokensForPhase: parseEther('88000').toString(),
-        priceInUsd: parseEther('0.4').toString(),
+        priceInUsd: parseEther('0.004').toString(),
         totalTokensForSale: parseEther('44000').toString()
     },
     6: {
         tokensForPhase: parseEther('108000').toString(),
-        priceInUsd: parseEther('0.05').toString(),
+        priceInUsd: parseEther('0.005').toString(),
         totalTokensForSale: parseEther('22000').toString()
     },
     7: {
         tokensForPhase: parseEther('128000').toString(),
-        priceInUsd: parseEther('0.06').toString(),
+        priceInUsd: parseEther('0.006').toString(),
         totalTokensForSale: parseEther('22000').toString()
     },
     8: {
         tokensForPhase: parseEther('148000').toString(),
-        priceInUsd: parseEther('0.07').toString(),
+        priceInUsd: parseEther('0.007').toString(),
         totalTokensForSale: parseEther('22000').toString()
     },
     9: {
         tokensForPhase: parseEther('168000').toString(),
-        priceInUsd: parseEther('0.08').toString(),
+        priceInUsd: parseEther('0.008').toString(),
         totalTokensForSale: parseEther('22000').toString()
     },
     10: {
         tokensForPhase: parseEther('188000').toString(),
-        priceInUsd: parseEther('0.09').toString(),
+        priceInUsd: parseEther('0.009').toString(),
         totalTokensForSale: parseEther('22000').toString()
     },
 };
