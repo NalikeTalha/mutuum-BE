@@ -26,6 +26,8 @@ export class PhaseService implements OnModuleInit {
         }
     }
 
+    
+
     async setSaleParamsAllChains(priceInUsd: string) {
         const setParamsPromises = Array.from(this.contracts.entries())
             .map(async ([chainId, contract]) => {

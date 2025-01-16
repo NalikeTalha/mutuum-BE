@@ -115,7 +115,7 @@ let PresaleController = class PresaleController {
                     }
                 }
             }
-            const totalHolders = await this.phaseService.getTotalBuyersAllChains();
+            const totalHolders = await this.tokenService.getUniqueWallets();
             const isLive = await this.phaseService.getIsLiveAllChains();
             const nativePrices = await this.phaseService.getNativePrices(Number((0, ethers_1.formatEther)(phaseConfig.priceInUsd)));
             console.log('nativePrices', nativePrices);

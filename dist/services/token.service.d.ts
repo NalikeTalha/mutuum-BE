@@ -16,6 +16,7 @@ export declare class TokenService {
         lastUpdated: Date;
         phase: number;
     }>;
+    getUniqueWallets(): Promise<number>;
     recordTradeAndUpdate(chainId: number, user: string, tradeAmount: string, newTotal: string): Promise<{
         chainToken: {
             address: string;

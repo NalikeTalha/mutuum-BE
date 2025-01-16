@@ -40,6 +40,18 @@ let TokenService = class TokenService {
             });
         }
     }
+    async getUniqueWallets() {
+        try {
+            const users = await this.prisma.trade.findMany({
+                distinct: ['user']
+            });
+            return users.length;
+        }
+        catch (error) {
+            console.log('error', error);
+            return 0;
+        }
+    }
     async recordTradeAndUpdate(chainId, user, tradeAmount, newTotal) {
         const chainToken = await this.prisma.$transaction(async (tx) => {
             const existingToken = await tx.chainToken.findFirst({ where: { chainId } });

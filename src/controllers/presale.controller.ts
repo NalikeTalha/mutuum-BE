@@ -35,7 +35,7 @@ class getUserBalanceDto {
 export class PresaleController {
     constructor(
         private readonly tokenService: TokenService,
-        private readonly phaseService: PhaseService
+        private readonly phaseService: PhaseService,
     ) { }
 
     @Get('phases')
@@ -120,7 +120,7 @@ export class PresaleController {
                 }
             }
 
-            const totalHolders = await this.phaseService.getTotalBuyersAllChains()
+            const totalHolders = await this.tokenService.getUniqueWallets()
             const isLive = await this.phaseService.getIsLiveAllChains()
             const nativePrices = await this.phaseService.getNativePrices(Number(formatEther(phaseConfig.priceInUsd)))
             console.log('nativePrices', nativePrices)   
