@@ -12,13 +12,13 @@ export const CHAIN_CONFIGS_DEV: ChainConfig[] = [
         //bsc testnet
         "chainId": 97,
         "rpcUrl": "https://bsc-testnet.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
-        "contractAddress": "0x4fFB58E8C97f408bD0D81E93966EbD1D4d7B56B7"
+        "contractAddress": "0xD5df07D329713c1abF04991f91ff1456B1603de4"
     },
     {
         // eth sepolia
         "chainId": 11155111,
         "rpcUrl": "https://sepolia.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
-        "contractAddress": "0x5D4279c7AC752C01aeEcE33809e19c4E449ebF74"
+        "contractAddress": "0xCca93E796fa925DD0b816434e2168cA43c42BDAB"
     },
     // {
     //     // base sepolia
@@ -54,61 +54,51 @@ console.log('process.env.IS_LIVE',process.env.IS_LIVE);
 export const CHAIN_CONFIGS = process.env.IS_LIVE == 'true'  ? CHAIN_CONFIGS_PROD : CHAIN_CONFIGS_DEV;
 
 export interface PhaseConfig {
-    tokensForPhase: string;     // Amount after which phase changes
+    // tokensForPhase: string;     // Amount after which phase changes
     priceInUsd: string;
     totalTokensForSale: string;
 }
 
 export const PHASES: Record<number, PhaseConfig> = {
     1: {
-        tokensForPhase: parseEther('5000').toString(),
-        priceInUsd: parseEther('0.001').toString(),
+        priceInUsd: parseEther('0.0001').toString(),
         totalTokensForSale: parseEther('5000').toString()
     },
     2: {
-        tokensForPhase: parseEther('11000').toString(),
-        priceInUsd: parseEther('0.01').toString(),
+        priceInUsd: parseEther('0.0002').toString(),
         totalTokensForSale: parseEther('10000').toString()
     },
     3: {
-        tokensForPhase: parseEther('22000').toString(),
-        priceInUsd: parseEther('0.02').toString(),
-        totalTokensForSale: parseEther('11000').toString()
+        priceInUsd: parseEther('0.0003').toString(),
+        totalTokensForSale: parseEther('15000').toString()
     },
     4: {
-        tokensForPhase: parseEther('44000').toString(),
-        priceInUsd: parseEther('0.03').toString(),
-        totalTokensForSale: parseEther('22000').toString()
+        priceInUsd: parseEther('0.0004').toString(),
+        totalTokensForSale: parseEther('20000').toString()
     },
     5: {
-        tokensForPhase: parseEther('88000').toString(),
-        priceInUsd: parseEther('0.004').toString(),
-        totalTokensForSale: parseEther('44000').toString()
+        priceInUsd: parseEther('0.0005').toString(),
+        totalTokensForSale: parseEther('25000').toString()
     },
     6: {
-        tokensForPhase: parseEther('108000').toString(),
-        priceInUsd: parseEther('0.005').toString(),
-        totalTokensForSale: parseEther('22000').toString()
+        priceInUsd: parseEther('0.0006').toString(),
+        totalTokensForSale: parseEther('30000').toString()
     },
     7: {
-        tokensForPhase: parseEther('128000').toString(),
-        priceInUsd: parseEther('0.006').toString(),
-        totalTokensForSale: parseEther('22000').toString()
+        priceInUsd: parseEther('0.0007').toString(),
+        totalTokensForSale: parseEther('35000').toString()
     },
     8: {
-        tokensForPhase: parseEther('148000').toString(),
-        priceInUsd: parseEther('0.007').toString(),
-        totalTokensForSale: parseEther('22000').toString()
+        priceInUsd: parseEther('0.0008').toString(),
+        totalTokensForSale: parseEther('40000').toString()
     },
     9: {
-        tokensForPhase: parseEther('168000').toString(),
-        priceInUsd: parseEther('0.008').toString(),
-        totalTokensForSale: parseEther('22000').toString()
+        priceInUsd: parseEther('0.0009').toString(),
+        totalTokensForSale: parseEther('45000').toString()
     },
     10: {
-        tokensForPhase: parseEther('188000').toString(),
-        priceInUsd: parseEther('0.009').toString(),
-        totalTokensForSale: parseEther('22000').toString()
+        priceInUsd: parseEther('0.001').toString(),
+        totalTokensForSale: parseEther('50000').toString()
     },
 };
 // export const PHASES: Record<number, PhaseConfig> = {

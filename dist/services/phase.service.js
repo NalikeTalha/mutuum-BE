@@ -80,6 +80,30 @@ let PhaseService = class PhaseService {
         console.log(`Total sum of totalBought across all chains: ${totalBoughtSum}`);
         return totalBoughtSum;
     }
+    async getTotalBalance(address) {
+        const getTotalBalancePromises = Array.from(this.contracts.entries())
+            .map(async ([chainId, contract]) => {
+            try {
+                console.log(`Fetching totalBought from chainId: ${chainId}`);
+                const balance = await contract.balanceOf(address);
+                console.log(`balance on chain ${chainId}:`, balance.toString());
+                return parseFloat(balance.toString());
+            }
+            catch (error) {
+                console.error(`Failed to fetch totalBought on chain ${chainId}:`, error);
+                return 0;
+            }
+        });
+        const results = await Promise.allSettled(getTotalBalancePromises);
+        const getTotalBalanceSum = results.reduce((sum, result) => {
+            if (result.status === 'fulfilled') {
+                return sum + result.value;
+            }
+            return sum;
+        }, 0);
+        console.log(`Total balance across all chains: ${getTotalBalanceSum}`);
+        return (0, ethers_1.formatEther)(getTotalBalanceSum);
+    }
     async getIsLiveAllChains() {
         const allIsLivePromises = Array.from(this.contracts.entries())
             .map(async ([chainId, contract]) => {

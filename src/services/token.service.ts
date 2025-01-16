@@ -6,7 +6,6 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { parseEther } from 'ethers';
 
 interface PhaseConfig {
-    tokensForPhase: string;
     priceInUsd: string;
     totalTokensForSale: string;
 }
@@ -143,6 +142,14 @@ export class TokenService {
         return null;
     }
 
+    public getTokenForNextPhase(phase: number):string {
+        let tokenForNextPhase = Number(PHASES[phase].totalTokensForSale);
+        for (let i = 1; i <= phase; i++) {
+            tokenForNextPhase += Number(PHASES[i].totalTokensForSale);
+        }
+        return tokenForNextPhase.toLocaleString('fullwide', { useGrouping: false });
+    }
+
 
     private async getOldPhase(chainTokenId: number) {
         const oldRecord = await this.prisma.chainToken.findUnique({
@@ -156,8 +163,8 @@ export class TokenService {
         const total = BigInt(Number(totalBought).toLocaleString('fullwide', { useGrouping: false }));
         for (const [p, config] of Object.entries(PHASES)) {
             phase = Number(p);
-            console.log(p , config)
-            if (total < BigInt(Number(config.tokensForPhase)- (Number(parseEther("20"))))) {
+            const tokenForNextPhase = this.getTokenForNextPhase(phase);
+            if (total < BigInt(Number(tokenForNextPhase)- (Number(parseEther("20"))))) {
                 break;
             }
             

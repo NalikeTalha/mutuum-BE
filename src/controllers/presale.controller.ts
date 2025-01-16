@@ -19,6 +19,17 @@ class SetLaunchTimeDto {
     time: string;  // Changed to string type
 }
 
+class getUserBalanceDto {
+    @ApiProperty({
+        description: 'The address of the user',
+        example: '0xa941ABb07aD9763EEc74f8001fd4512A345Ba7D6',
+        type: String
+    })
+    @IsNotEmpty()
+    @IsString()
+    address: string;  // Changed to string type
+}
+
 @ApiTags('presale')
 @Controller('presale')
 export class PresaleController {
@@ -84,20 +95,24 @@ export class PresaleController {
 
             const currentPhase = this.tokenService.calculatePhase(totalBought);
             const phaseConfig = this.tokenService.getPhaseConfig(currentPhase);
+            const tokenForNextPhase = this.tokenService.getTokenForNextPhase(currentPhase);
 
             console.log('phaseConfig', phaseConfig)
             let totalRaisedInUsd = 0
 
             for (let i = 1; i <= currentPhase; i++) {
-                const phaseDetails = this.tokenService.getPhaseConfig(i)
                 if (currentPhase == 1) {
-                    if (totalBought < phaseDetails.tokensForPhase) {
+                    const phaseDetails = this.tokenService.getPhaseConfig(currentPhase)
+                    const tokenforNextPhase = this.tokenService.getTokenForNextPhase(currentPhase)
+                    if (Number(totalBought) < Number(tokenforNextPhase)) {
                         totalRaisedInUsd = Number(formatEther(totalBought)) * Number(formatEther(phaseDetails.priceInUsd))
                     } else {
                         totalRaisedInUsd = Number(formatEther(phaseConfig.totalTokensForSale)) * Number(formatEther(phaseDetails.priceInUsd))
                     }
                 } else {
-                    if (totalBought < phaseDetails.tokensForPhase) {
+                    const phaseDetails = this.tokenService.getPhaseConfig(i)
+                    const tokenforNextPhase = this.tokenService.getTokenForNextPhase(i)
+                    if (Number(totalBought) < Number(tokenforNextPhase)) {
                         totalRaisedInUsd += Number(formatEther(totalBought)) * Number(formatEther(phaseDetails.priceInUsd))
                     } else {
                         totalRaisedInUsd += Number(formatEther(phaseConfig.totalTokensForSale)) * Number(formatEther(phaseDetails.priceInUsd))
@@ -115,9 +130,9 @@ export class PresaleController {
             return {
                 totalBought: formatEther(totalBought),
                 currentPhase,
-                tokenForLastPhase: Number(formatEther(phaseConfig.tokensForPhase))-Number(formatEther(phaseConfig.totalTokensForSale)),
+                tokenForLastPhase: Number(formatEther(tokenForNextPhase))-Number(formatEther(phaseConfig.totalTokensForSale)),
                 priceInUsd: formatEther(phaseConfig.priceInUsd),
-                tokenToNextPhase: formatEther(phaseConfig.tokensForPhase),
+                tokenToNextPhase: formatEther(tokenForNextPhase),
                 totalRaisedInUsd,
                 totalHolders,
                 isLive,
@@ -129,6 +144,17 @@ export class PresaleController {
             return err
         }
     }
+
+    @Post('getUserBalance')
+    @ApiOperation({ summary: 'Get user balance' })
+    async getUserBalance(@Body() body: getUserBalanceDto) { 
+        try {
+            return await this.phaseService.getTotalBalance(body.address);
+        } catch (err) {
+            console.log('err', err);
+            return err;
+        }
+    }    
 
     @Post('launch-time')
     @ApiOperation({ summary: 'Set launch date and time' })

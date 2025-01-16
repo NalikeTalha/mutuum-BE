@@ -120,6 +120,13 @@ let TokenService = class TokenService {
         }
         return null;
     }
+    getTokenForNextPhase(phase) {
+        let tokenForNextPhase = Number(global_config_1.PHASES[phase].totalTokensForSale);
+        for (let i = 1; i <= phase; i++) {
+            tokenForNextPhase += Number(global_config_1.PHASES[i].totalTokensForSale);
+        }
+        return tokenForNextPhase.toLocaleString('fullwide', { useGrouping: false });
+    }
     async getOldPhase(chainTokenId) {
         const oldRecord = await this.prisma.chainToken.findUnique({
             where: { id: chainTokenId }
@@ -131,8 +138,8 @@ let TokenService = class TokenService {
         const total = BigInt(Number(totalBought).toLocaleString('fullwide', { useGrouping: false }));
         for (const [p, config] of Object.entries(global_config_1.PHASES)) {
             phase = Number(p);
-            console.log(p, config);
-            if (total < BigInt(Number(config.tokensForPhase) - (Number((0, ethers_1.parseEther)("20"))))) {
+            const tokenForNextPhase = this.getTokenForNextPhase(phase);
+            if (total < BigInt(Number(tokenForNextPhase) - (Number((0, ethers_1.parseEther)("20"))))) {
                 break;
             }
         }

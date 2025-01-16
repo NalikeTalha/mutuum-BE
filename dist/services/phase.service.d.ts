@@ -5,6 +5,7 @@ export declare class PhaseService implements OnModuleInit {
     onModuleInit(): Promise<void>;
     setSaleParamsAllChains(priceInUsd: string): Promise<void>;
     getTotalBuyersAllChains(): Promise<number>;
+    getTotalBalance(address: string): Promise<string>;
     getIsLiveAllChains(): Promise<boolean>;
     getLatestSold(): Promise<any>;
     getNativePrices(priceInUsd: number): Promise<any>;

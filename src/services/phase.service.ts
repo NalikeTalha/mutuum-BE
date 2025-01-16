@@ -81,6 +81,34 @@ export class PhaseService implements OnModuleInit {
         return totalBoughtSum;
     }
 
+    async getTotalBalance(address:string): Promise<string> {
+        const getTotalBalancePromises = Array.from(this.contracts.entries())
+            .map(async ([chainId, contract]) => {
+                try {
+                    console.log(`Fetching totalBought from chainId: ${chainId}`);
+                    const balance = await contract.balanceOf(address);
+                    console.log(`balance on chain ${chainId}:`, balance.toString());
+                    return parseFloat(balance.toString()); // Convert BigNumber to a number
+                } catch (error) {
+                    console.error(`Failed to fetch totalBought on chain ${chainId}:`, error);
+                    return 0; // Return 0 if the call fails
+                }
+            });
+
+        const results = await Promise.allSettled(getTotalBalancePromises);
+
+        // Sum up all successful results
+        const getTotalBalanceSum = results.reduce((sum, result) => {
+            if (result.status === 'fulfilled') {
+                return sum + result.value;
+            }
+            return sum; // Ignore rejected promises
+        }, 0);
+
+        console.log(`Total balance across all chains: ${getTotalBalanceSum}`);
+        return formatEther(getTotalBalanceSum);
+    }
+    
     async getIsLiveAllChains(): Promise<boolean> {
         const allIsLivePromises = Array.from(this.contracts.entries())
             .map(async ([chainId, contract]) => {

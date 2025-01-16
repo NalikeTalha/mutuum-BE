@@ -1,7 +1,6 @@
 import { PrismaService } from './prisma.service';
 import { PhaseService } from './phase.service';
 interface PhaseConfig {
-    tokensForPhase: string;
     priceInUsd: string;
     totalTokensForSale: string;
 }
@@ -56,6 +55,7 @@ export declare class TokenService {
         time: Date;
     }>;
     getLaunchTime(): Promise<Date>;
+    getTokenForNextPhase(phase: number): string;
     private getOldPhase;
     calculatePhase(totalBought: string): number;
     private handlePhaseTransition;

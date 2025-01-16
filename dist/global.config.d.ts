@@ -7,7 +7,6 @@ export declare const CHAIN_CONFIGS_DEV: ChainConfig[];
 export declare const CHAIN_CONFIGS_PROD: ChainConfig[];
 export declare const CHAIN_CONFIGS: ChainConfig[];
 export interface PhaseConfig {
-    tokensForPhase: string;
     priceInUsd: string;
     totalTokensForSale: string;
 }

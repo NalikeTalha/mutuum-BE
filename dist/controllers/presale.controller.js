@@ -32,6 +32,18 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], SetLaunchTimeDto.prototype, "time", void 0);
+class getUserBalanceDto {
+}
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'The address of the user',
+        example: '0xa941ABb07aD9763EEc74f8001fd4512A345Ba7D6',
+        type: String
+    }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], getUserBalanceDto.prototype, "address", void 0);
 let PresaleController = class PresaleController {
     constructor(tokenService, phaseService) {
         this.tokenService = tokenService;
@@ -78,12 +90,14 @@ let PresaleController = class PresaleController {
             const totalBought = chains.reduce((sum, chain) => sum + BigInt(chain.totalBought), BigInt(0)).toString();
             const currentPhase = this.tokenService.calculatePhase(totalBought);
             const phaseConfig = this.tokenService.getPhaseConfig(currentPhase);
+            const tokenForNextPhase = this.tokenService.getTokenForNextPhase(currentPhase);
             console.log('phaseConfig', phaseConfig);
             let totalRaisedInUsd = 0;
             for (let i = 1; i <= currentPhase; i++) {
-                const phaseDetails = this.tokenService.getPhaseConfig(i);
                 if (currentPhase == 1) {
-                    if (totalBought < phaseDetails.tokensForPhase) {
+                    const phaseDetails = this.tokenService.getPhaseConfig(currentPhase);
+                    const tokenforNextPhase = this.tokenService.getTokenForNextPhase(currentPhase);
+                    if (Number(totalBought) < Number(tokenforNextPhase)) {
                         totalRaisedInUsd = Number((0, ethers_1.formatEther)(totalBought)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
                     }
                     else {
@@ -91,7 +105,9 @@ let PresaleController = class PresaleController {
                     }
                 }
                 else {
-                    if (totalBought < phaseDetails.tokensForPhase) {
+                    const phaseDetails = this.tokenService.getPhaseConfig(i);
+                    const tokenforNextPhase = this.tokenService.getTokenForNextPhase(i);
+                    if (Number(totalBought) < Number(tokenforNextPhase)) {
                         totalRaisedInUsd += Number((0, ethers_1.formatEther)(totalBought)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
                     }
                     else {
@@ -107,15 +123,24 @@ let PresaleController = class PresaleController {
             return {
                 totalBought: (0, ethers_1.formatEther)(totalBought),
                 currentPhase,
-                tokenForLastPhase: Number((0, ethers_1.formatEther)(phaseConfig.tokensForPhase)) - Number((0, ethers_1.formatEther)(phaseConfig.totalTokensForSale)),
+                tokenForLastPhase: Number((0, ethers_1.formatEther)(tokenForNextPhase)) - Number((0, ethers_1.formatEther)(phaseConfig.totalTokensForSale)),
                 priceInUsd: (0, ethers_1.formatEther)(phaseConfig.priceInUsd),
-                tokenToNextPhase: (0, ethers_1.formatEther)(phaseConfig.tokensForPhase),
+                tokenToNextPhase: (0, ethers_1.formatEther)(tokenForNextPhase),
                 totalRaisedInUsd,
                 totalHolders,
                 isLive,
                 launchTime,
                 nativePrices: { ...nativePrices }
             };
+        }
+        catch (err) {
+            console.log('err', err);
+            return err;
+        }
+    }
+    async getUserBalance(body) {
+        try {
+            return await this.phaseService.getTotalBalance(body.address);
         }
         catch (err) {
             console.log('err', err);
@@ -161,6 +186,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PresaleController.prototype, "getPresaleDetails", null);
+__decorate([
+    (0, common_1.Post)('getUserBalance'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get user balance' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [getUserBalanceDto]),
+    __metadata("design:returntype", Promise)
+], PresaleController.prototype, "getUserBalance", null);
 __decorate([
     (0, common_1.Post)('launch-time'),
     (0, swagger_1.ApiOperation)({ summary: 'Set launch date and time' }),

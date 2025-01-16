@@ -4,6 +4,9 @@ import { TokenService } from "src/services/token.service";
 declare class SetLaunchTimeDto {
     time: string;
 }
+declare class getUserBalanceDto {
+    address: string;
+}
 export declare class PresaleController {
     private readonly tokenService;
     private readonly phaseService;
@@ -14,6 +17,7 @@ export declare class PresaleController {
     recordTransaction(): Promise<any>;
     getPresaleStatus(): Promise<any>;
     getPresaleDetails(): Promise<any>;
+    getUserBalance(body: getUserBalanceDto): Promise<any>;
     setLaunchTime(launchTimeDto: SetLaunchTimeDto): Promise<{
         id: number;
         time: Date;
