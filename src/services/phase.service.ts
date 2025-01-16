@@ -107,8 +107,8 @@ export class PhaseService implements OnModuleInit {
             return sum; // Ignore rejected promises
         }, 0);
 
-        console.log(`Total balance across all chains: ${getTotalBalanceSum}`);
-        return formatEther(getTotalBalanceSum);
+        console.log(`Total balance across all chains: ${formatEther(getTotalBalanceSum.toLocaleString('fullwide', { useGrouping: false }))}`);
+        return formatEther(getTotalBalanceSum.toLocaleString('fullwide', { useGrouping: false }));
     }
     
     async getIsLiveAllChains(): Promise<boolean> {

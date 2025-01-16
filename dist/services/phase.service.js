@@ -101,8 +101,8 @@ let PhaseService = class PhaseService {
             }
             return sum;
         }, 0);
-        console.log(`Total balance across all chains: ${getTotalBalanceSum}`);
-        return (0, ethers_1.formatEther)(getTotalBalanceSum);
+        console.log(`Total balance across all chains: ${(0, ethers_1.formatEther)(getTotalBalanceSum.toLocaleString('fullwide', { useGrouping: false }))}`);
+        return (0, ethers_1.formatEther)(getTotalBalanceSum.toLocaleString('fullwide', { useGrouping: false }));
     }
     async getIsLiveAllChains() {
         const allIsLivePromises = Array.from(this.contracts.entries())
