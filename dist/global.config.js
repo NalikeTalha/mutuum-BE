@@ -51,7 +51,7 @@ exports.PHASES = {
         totalTokensForSale: (0, ethers_1.parseEther)('20000').toString()
     },
     5: {
-        priceInUsd: (0, ethers_1.parseEther)('0.0005').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.1').toString(),
         totalTokensForSale: (0, ethers_1.parseEther)('25000').toString()
     },
     6: {
