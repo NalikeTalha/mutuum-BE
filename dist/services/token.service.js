@@ -133,7 +133,7 @@ let TokenService = class TokenService {
         return null;
     }
     getTokenForNextPhase(phase) {
-        let tokenForNextPhase = Number(global_config_1.PHASES[phase].totalTokensForSale);
+        let tokenForNextPhase = Number(global_config_1.PHASES[1].totalTokensForSale);
         for (let i = 2; i <= phase; i++) {
             tokenForNextPhase += Number(global_config_1.PHASES[i].totalTokensForSale);
         }

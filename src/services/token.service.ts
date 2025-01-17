@@ -49,7 +49,7 @@ export class TokenService {
             return 0
         }
     }
-    
+
     async recordTradeAndUpdate(chainId: number, user: string, tradeAmount: string, newTotal: string) {
         const chainToken = await this.prisma.$transaction(async (tx) => {
             const existingToken = await tx.chainToken.findFirst({ where: { chainId } });
@@ -155,7 +155,7 @@ export class TokenService {
     }
 
     public getTokenForNextPhase(phase: number):string {
-        let tokenForNextPhase = Number(PHASES[phase].totalTokensForSale);
+        let tokenForNextPhase = Number(PHASES[1].totalTokensForSale);
         for (let i = 2; i <= phase; i++) {
             tokenForNextPhase += Number(PHASES[i].totalTokensForSale);
         }
