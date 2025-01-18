@@ -85,7 +85,7 @@ export const PHASES: Record<number, PhaseConfig> = {
         totalTokensForSale: parseEther('30000').toString()
     },
     7: {
-        priceInUsd: parseEther('0.0007').toString(),
+        priceInUsd: parseEther('0.1').toString(),
         totalTokensForSale: parseEther('35000').toString()
     },
     8: {
