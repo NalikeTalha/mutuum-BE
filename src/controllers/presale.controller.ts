@@ -94,46 +94,52 @@ export class PresaleController {
             ).toString();
 
             const currentPhase = this.tokenService.calculatePhase(totalBought);
-            const phaseConfig = this.tokenService.getPhaseConfig(currentPhase);
+            const phaseDetails = this.tokenService.getPhaseConfig(currentPhase);
             const tokenForNextPhase = this.tokenService.getTokenForNextPhase(currentPhase);
 
-            console.log('phaseConfig', phaseConfig)
             let totalRaisedInUsd = 0
+
+            let totalAccounted:bigint = 0n
 
             for (let i = 1; i <= currentPhase; i++) {
                 if (currentPhase == 1) {
                     const phaseDetails = this.tokenService.getPhaseConfig(currentPhase)
                     const tokenforNextPhase = this.tokenService.getTokenForNextPhase(currentPhase)
+                    console.log('tokenforNextPhase', tokenforNextPhase)
                     if (Number(totalBought) < Number(tokenforNextPhase)) {
                         totalRaisedInUsd = Number(formatEther(totalBought)) * Number(formatEther(phaseDetails.priceInUsd))
+                        console.log('totalRaisedInUsd 1', totalRaisedInUsd)
                     } else {
-                        totalRaisedInUsd = Number(formatEther(phaseConfig.totalTokensForSale)) * Number(formatEther(phaseDetails.priceInUsd))
+                        totalRaisedInUsd = Number(formatEther(phaseDetails.totalTokensForSale)) * Number(formatEther(phaseDetails.priceInUsd))
+                        totalAccounted = totalAccounted + BigInt(phaseDetails.totalTokensForSale)
+                        console.log('totalRaisedInUsd 2', totalRaisedInUsd)
+
                     }
                 } else {
                     const phaseDetails = this.tokenService.getPhaseConfig(i)
                     const tokenforNextPhase = this.tokenService.getTokenForNextPhase(i)
                     if (Number(totalBought) < Number(tokenforNextPhase)) {
-                        totalRaisedInUsd += Number(formatEther(totalBought)) * Number(formatEther(phaseDetails.priceInUsd))
+                        totalRaisedInUsd += Number(formatEther(BigInt(totalBought) - totalAccounted)) * Number(formatEther(phaseDetails.priceInUsd))
                     } else {
-                        totalRaisedInUsd += Number(formatEther(phaseConfig.totalTokensForSale)) * Number(formatEther(phaseDetails.priceInUsd))
+                        totalRaisedInUsd += Number(formatEther(phaseDetails.totalTokensForSale)) * Number(formatEther(phaseDetails.priceInUsd))
+                        totalAccounted = totalAccounted + BigInt(phaseDetails.totalTokensForSale)
                     }
                 }
             }
 
             const totalHolders = await this.tokenService.getUniqueWallets()
             const isLive = await this.phaseService.getIsLiveAllChains()
-            const nativePrices = await this.phaseService.getNativePrices(Number(formatEther(phaseConfig.priceInUsd)))
-            console.log('nativePrices', nativePrices)   
+            const nativePrices = await this.phaseService.getNativePrices(Number(formatEther(phaseDetails.priceInUsd)))
 
             const launchTime = await this.tokenService.getLaunchTime();
 
             return {
                 totalBought: formatEther(totalBought),
                 currentPhase,
-                tokenForLastPhase: Number(formatEther(tokenForNextPhase))-Number(formatEther(phaseConfig.totalTokensForSale)),
-                priceInUsd: formatEther(phaseConfig.priceInUsd),
+                tokenForLastPhase: Number(formatEther(tokenForNextPhase))-Number(formatEther(phaseDetails.totalTokensForSale)),
+                priceInUsd: formatEther(phaseDetails.priceInUsd),
                 tokenToNextPhase: formatEther(tokenForNextPhase),
-                totalRaisedInUsd,
+                totalRaisedInUsd: totalRaisedInUsd.toFixed(2),
                 totalHolders,
                 isLive,
                 launchTime,

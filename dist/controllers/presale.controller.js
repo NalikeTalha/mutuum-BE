@@ -89,44 +89,48 @@ let PresaleController = class PresaleController {
             const chains = await this.tokenService.getAllChainsStatus();
             const totalBought = chains.reduce((sum, chain) => sum + BigInt(chain.totalBought), BigInt(0)).toString();
             const currentPhase = this.tokenService.calculatePhase(totalBought);
-            const phaseConfig = this.tokenService.getPhaseConfig(currentPhase);
+            const phaseDetails = this.tokenService.getPhaseConfig(currentPhase);
             const tokenForNextPhase = this.tokenService.getTokenForNextPhase(currentPhase);
-            console.log('phaseConfig', phaseConfig);
             let totalRaisedInUsd = 0;
+            let totalAccounted = 0n;
             for (let i = 1; i <= currentPhase; i++) {
                 if (currentPhase == 1) {
                     const phaseDetails = this.tokenService.getPhaseConfig(currentPhase);
                     const tokenforNextPhase = this.tokenService.getTokenForNextPhase(currentPhase);
+                    console.log('tokenforNextPhase', tokenforNextPhase);
                     if (Number(totalBought) < Number(tokenforNextPhase)) {
                         totalRaisedInUsd = Number((0, ethers_1.formatEther)(totalBought)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
+                        console.log('totalRaisedInUsd 1', totalRaisedInUsd);
                     }
                     else {
-                        totalRaisedInUsd = Number((0, ethers_1.formatEther)(phaseConfig.totalTokensForSale)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
+                        totalRaisedInUsd = Number((0, ethers_1.formatEther)(phaseDetails.totalTokensForSale)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
+                        totalAccounted = totalAccounted + BigInt(phaseDetails.totalTokensForSale);
+                        console.log('totalRaisedInUsd 2', totalRaisedInUsd);
                     }
                 }
                 else {
                     const phaseDetails = this.tokenService.getPhaseConfig(i);
                     const tokenforNextPhase = this.tokenService.getTokenForNextPhase(i);
                     if (Number(totalBought) < Number(tokenforNextPhase)) {
-                        totalRaisedInUsd += Number((0, ethers_1.formatEther)(totalBought)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
+                        totalRaisedInUsd += Number((0, ethers_1.formatEther)(BigInt(totalBought) - totalAccounted)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
                     }
                     else {
-                        totalRaisedInUsd += Number((0, ethers_1.formatEther)(phaseConfig.totalTokensForSale)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
+                        totalRaisedInUsd += Number((0, ethers_1.formatEther)(phaseDetails.totalTokensForSale)) * Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd));
+                        totalAccounted = totalAccounted + BigInt(phaseDetails.totalTokensForSale);
                     }
                 }
             }
             const totalHolders = await this.tokenService.getUniqueWallets();
             const isLive = await this.phaseService.getIsLiveAllChains();
-            const nativePrices = await this.phaseService.getNativePrices(Number((0, ethers_1.formatEther)(phaseConfig.priceInUsd)));
-            console.log('nativePrices', nativePrices);
+            const nativePrices = await this.phaseService.getNativePrices(Number((0, ethers_1.formatEther)(phaseDetails.priceInUsd)));
             const launchTime = await this.tokenService.getLaunchTime();
             return {
                 totalBought: (0, ethers_1.formatEther)(totalBought),
                 currentPhase,
-                tokenForLastPhase: Number((0, ethers_1.formatEther)(tokenForNextPhase)) - Number((0, ethers_1.formatEther)(phaseConfig.totalTokensForSale)),
-                priceInUsd: (0, ethers_1.formatEther)(phaseConfig.priceInUsd),
+                tokenForLastPhase: Number((0, ethers_1.formatEther)(tokenForNextPhase)) - Number((0, ethers_1.formatEther)(phaseDetails.totalTokensForSale)),
+                priceInUsd: (0, ethers_1.formatEther)(phaseDetails.priceInUsd),
                 tokenToNextPhase: (0, ethers_1.formatEther)(tokenForNextPhase),
-                totalRaisedInUsd,
+                totalRaisedInUsd: totalRaisedInUsd.toFixed(2),
                 totalHolders,
                 isLive,
                 launchTime,
