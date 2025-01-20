@@ -6,12 +6,12 @@ exports.CHAIN_CONFIGS_DEV = [
     {
         "chainId": 97,
         "rpcUrl": "https://bsc-testnet.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
-        "contractAddress": "0xD5df07D329713c1abF04991f91ff1456B1603de4"
+        "contractAddress": "0xfb0B93286664d8b4103FfA2c75D375fa2F154B8E"
     },
     {
         "chainId": 11155111,
         "rpcUrl": "https://sepolia.infura.io/v3/8c9b43975fae4c7c8e7caa3fe0a9eaf3",
-        "contractAddress": "0xCca93E796fa925DD0b816434e2168cA43c42BDAB"
+        "contractAddress": "0x505164fdc2438bbE92806DE55954b3164B636cE3"
     },
 ];
 exports.CHAIN_CONFIGS_PROD = [
@@ -39,40 +39,20 @@ exports.PHASES = {
         totalTokensForSale: (0, ethers_1.parseEther)('5000').toString()
     },
     2: {
-        priceInUsd: (0, ethers_1.parseEther)('0.0002').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.0005').toString(),
         totalTokensForSale: (0, ethers_1.parseEther)('10000').toString()
     },
     3: {
-        priceInUsd: (0, ethers_1.parseEther)('0.0003').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.001').toString(),
         totalTokensForSale: (0, ethers_1.parseEther)('15000').toString()
     },
     4: {
-        priceInUsd: (0, ethers_1.parseEther)('0.0004').toString(),
+        priceInUsd: (0, ethers_1.parseEther)('0.005').toString(),
         totalTokensForSale: (0, ethers_1.parseEther)('20000').toString()
     },
     5: {
         priceInUsd: (0, ethers_1.parseEther)('0.1').toString(),
         totalTokensForSale: (0, ethers_1.parseEther)('25000').toString()
-    },
-    6: {
-        priceInUsd: (0, ethers_1.parseEther)('0.0006').toString(),
-        totalTokensForSale: (0, ethers_1.parseEther)('30000').toString()
-    },
-    7: {
-        priceInUsd: (0, ethers_1.parseEther)('0.0007').toString(),
-        totalTokensForSale: (0, ethers_1.parseEther)('35000').toString()
-    },
-    8: {
-        priceInUsd: (0, ethers_1.parseEther)('0.0008').toString(),
-        totalTokensForSale: (0, ethers_1.parseEther)('40000').toString()
-    },
-    9: {
-        priceInUsd: (0, ethers_1.parseEther)('0.0009').toString(),
-        totalTokensForSale: (0, ethers_1.parseEther)('45000').toString()
-    },
-    10: {
-        priceInUsd: (0, ethers_1.parseEther)('0.001').toString(),
-        totalTokensForSale: (0, ethers_1.parseEther)('50000').toString()
-    },
+    }
 };
 //# sourceMappingURL=global.config.js.map
